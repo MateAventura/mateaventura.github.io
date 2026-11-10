@@ -181,6 +181,7 @@ body[data-theme=noche] .stuckbtn{color:#fff}
 .letter p{font-family:'Baloo 2',Nunito,sans-serif;font-size:22px;line-height:1.3;margin:8px 0;color:#b0275e}
 .letter .sign{text-align:right;font-size:15px}
 .firma{text-align:center;font-size:12px;color:var(--mut);font-weight:700;opacity:.8;margin:18px 0 0}
+.cty{font-size:26px;display:flex;align-items:center;gap:8px;justify-content:center}.cty span{font-family:Nunito,sans-serif;font-size:15px;font-weight:800;text-align:left;line-height:1.1}
 </style>
 </head>
 <body data-theme="morado">
@@ -437,6 +438,7 @@ const ACH=[
  ['r7','☄️','Racha de 7','Practica 7 días seguidos',s=>s.maxStreak>=7],
  ['reto1','🎁','Retadora','Completa un reto del día',s=>s.retos>=1],
  ['reto10','🗓️','Constancia','Completa 10 retos del día',s=>s.retos>=10],
+ ['acento','🌎','Viajera de acentos','Adivina 10 acentos',s=>(s.acentos&&s.acentos.ok)>=10],
  ['compra','🛍️','De compras','Compra algo en la tienda',s=>s.shopped>=1],
  ['rica','💰','Hucha llena','Gana 1000 monedas en total',s=>s.earned>=1000],
  ...WORLDS.map((w,i)=>['m'+(i+1),w.emo,w.name,'Termina el mundo '+(i+1),s=>(s.stars[(i+1)+'-5']||0)>=1]),
@@ -457,12 +459,33 @@ function sfx(k){if(!ST.sound)return;try{AC=AC||new(window.AudioContext||window.w
 function pickVoice(){const vs=(speechSynthesis.getVoices()||[]).filter(v=>v.lang&&v.lang.toLowerCase().startsWith('es'));if(!vs.length)return null;
  const fem=/m[oó]nica|paulina|helena|laura|elvira|luc[ií]a|marisol|conchita|sabina|dalia|elena|ximena|ana|carmen|isabel|female|mujer|google espa/i,male=/jorge|pablo|[aá]lvaro|diego|juan|carlos|enrique|ra[uú]l|male|hombre|alonso|jaime/i;
  const score=v=>(fem.test(v.name)?4:0)-(male.test(v.name)?6:0)+(v.lang.toLowerCase()==='es-es'?2:0)+(v.localService?0:1);return vs.sort((x,y)=>score(y)-score(x))[0]}
-function speak(txt){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,'').replace(/÷/g,' entre ').replace(/×/g,' por ').replace(/−/g,' menos '));u.lang='es-ES';u.rate=1;u.pitch=1.6;const v=pickVoice();if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+function speak(txt,loc){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,'').replace(/÷/g,' entre ').replace(/×/g,' por ').replace(/−/g,' menos '));const vl=loc&&voicesByLoc()[loc];const v=vl||pickVoice();u.lang=v?v.lang.replace('_','-'):'es-ES';u.rate=1;u.pitch=vl?1.25:1.6;if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
 const cv=$('#fx'),cx=cv.getContext('2d');let parts=[];
 function confetti(n=140){cv.width=innerWidth;cv.height=innerHeight;const cols=['#ff5e7e','#ffd166','#06d6a0','#4cc9f0','#9b5de5','#ff9f1c'];for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*7+4,c:pick(cols),a:Math.random()*6,va:(Math.random()-.5)*.3,life:120+Math.random()*60});if(parts.length===n)requestAnimationFrame(fxLoop)}
 function fxLoop(){cx.clearRect(0,0,cv.width,cv.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.vx*=.99;p.a+=p.va;p.life--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;if(p.heart){p.vy+=-.33;cx.font='22px serif';cx.fillText('❤',0,0)}else cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()});parts=parts.filter(p=>p.life>0&&p.y<cv.height+20);if(parts.length)requestAnimationFrame(fxLoop);else cx.clearRect(0,0,cv.width,cv.height)}
 function coinFly(n,el){const r=(el||document.body).getBoundingClientRect();const d=document.createElement('div');d.className='coinfly';d.textContent='+'+n+' 🪙';d.style.left=(r.left+r.width/2-40)+'px';d.style.top=(Math.max(r.top,80))+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000);sfx('coin')}
 function addCoins(n){ST.coins+=n;ST.earned+=n}
+
+
+// ================= JUEGO DE ACENTOS =================
+const PAISES={ES:['España','🇪🇸','Madrid'],MX:['México','🇲🇽','Ciudad de México'],AR:['Argentina','🇦🇷','Buenos Aires'],CO:['Colombia','🇨🇴','Bogotá'],CL:['Chile','🇨🇱','Santiago'],PE:['Perú','🇵🇪','Lima'],VE:['Venezuela','🇻🇪','Caracas'],US:['Estados Unidos','🇺🇸','Washington'],UY:['Uruguay','🇺🇾','Montevideo'],CU:['Cuba','🇨🇺','La Habana'],EC:['Ecuador','🇪🇨','Quito'],BO:['Bolivia','🇧🇴','Sucre'],PY:['Paraguay','🇵🇾','Asunción'],PR:['Puerto Rico','🇵🇷','San Juan'],DO:['República Dominicana','🇩🇴','Santo Domingo'],CR:['Costa Rica','🇨🇷','San José'],GT:['Guatemala','🇬🇹','Ciudad de Guatemala'],PA:['Panamá','🇵🇦','Ciudad de Panamá'],SV:['El Salvador','🇸🇻','San Salvador'],HN:['Honduras','🇭🇳','Tegucigalpa'],NI:['Nicaragua','🇳🇮','Managua']};
+let _VBL=null;
+function voicesByLoc(){if(_VBL&&Object.keys(_VBL).length)return _VBL;const m={};const fem=/m[oó]nica|paulina|helena|laura|elvira|luc[ií]a|marisol|isabela|sabina|dalia|elena|ximena|camila|valentina|salom[eé]|catalina|paloma|female|mujer/i;
+ try{for(const v of speechSynthesis.getVoices()){const mm=/^es[-_]([A-Za-z]{2})/.exec(v.lang||'');if(!mm)continue;const c=mm[1].toUpperCase();if(!PAISES[c])continue;if(!m[c]||(fem.test(v.name)&&!fem.test(m[c].name))||(!v.localService&&m[c].localService&&fem.test(v.name)===fem.test(m[c].name)))m[c]=v}}catch(e){}
+ _VBL=m;return m}
+try{speechSynthesis.onvoiceschanged=()=>{_VBL=null}}catch(e){}
+const acentos=()=>Object.keys(voicesByLoc());
+let lastLoc='';
+function nextLoc(){const a=acentos();if(!a.length)return '';let c=pick(a);if(a.length>1)while(c===lastLoc)c=pick(a);lastLoc=c;return c}
+const FRASE_AC=['¡Hola, Alejandra! ¿Adivinas de dónde soy?','¡Muy bien! ¿Sabes de qué país es mi voz?','¡Enhorabuena por resolverlo! ¿De dónde crees que soy?','¡Qué crack! A ver si adivinas de dónde te hablo.'];
+function accHTML(){const a=acentos();if(a.length<2||!G.loc)return '';const st=G.acc;
+ if(!G.accOpts){const others=shuffle(Object.keys(PAISES).filter(c=>c!==G.loc));const near=shuffle(a.filter(c=>c!==G.loc));const wr=[...near,...others].filter((x,i,arr)=>arr.indexOf(x)===i).slice(0,3);G.accOpts=shuffle([G.loc,...wr])}
+ let h=`<div class="card acc"><div class="row" style="justify-content:space-between"><b style="font-family:'Baloo 2',Nunito,sans-serif;font-size:21px">🌎 ¿De qué país es la voz?</b><button class="btn sec" style="padding:8px 14px;font-size:16px" onclick="speak(pick(FRASE_AC),G.loc)">▶ Escuchar</button></div>
+ <p class="small mut" style="font-weight:700;margin:4px 0 10px">Es la voz que te ha leído este problema. Escúchala y adivina su acento (+3 🪙).</p><div class="choices">`;
+ h+=G.accOpts.map(c=>`<button class="choice cty ${st?(c===G.loc?'yes':(c===st?'no':'')):''}" ${st?'disabled':''} onclick="guessAcc('${c}')">${PAISES[c][1]} <span>${PAISES[c][0]}</span></button>`).join('')+'</div>';
+ if(st)h+=`<div class="sol ${st===G.loc?'':'bad'}" style="margin-top:10px"><b>${st===G.loc?'¡Sí! 🎉':'¡Casi!'}</b> Era una voz de <b>${PAISES[G.loc][1]} ${PAISES[G.loc][0]}</b>. Su capital es ${PAISES[G.loc][2]}.</div>`;
+ return h+'</div>'}
+function guessAcc(c){if(G.acc)return;G.acc=c;ST.acentos=ST.acentos||{n:0,ok:0};ST.acentos.n++;if(c===G.loc){ST.acentos.ok++;addCoins(3);sfx('ok');setTimeout(()=>coinFly(3,$('.acc')),50)}else sfx('ko');save();vPlay();renderTop();const n=checkAch();if(n.length)setTimeout(()=>showAch(n,0),900);setTimeout(()=>{const e=$('.acc');if(e)e.scrollIntoView({behavior:'smooth',block:'center'})},80)}
 
 // ================= VISTAS =================
 const avatar=(sz,e=ST.avatar,a=ST.acc)=>`<span class="av ${sz}"><span class="e">${e}</span>${a?`<span class="acc">${a}</span>`:''}</span>`;
@@ -523,7 +546,7 @@ function startReto(){if(ST.reto===today()){toast('🎁','¡Ya hiciste el reto de
  const open=[];for(let w=1;w<=8;w++)for(let l=1;l<=5;l++)if(isOpen(w,l))open.push([w,l]);const done=open.filter(([w,l])=>ST.stars[lvKey(w,l)]);const pool=done.length?done:open;
  const probs=[];for(let i=0;i<5;i++){const [w,l]=pick(pool);probs.push(genLevel(w,l,1)[0])}
  G={mode:'reto',probs,i:0,res:[],hintsUsed:0};newProb();SCREEN='play';render();scrollTo(0,0)}
-function newProb(){const p=G.probs[G.i];G.phase=(p.op&&WORLDS[p.w-1].opPhase)?'op':'ans';G.tries=0;G.hint=0;G.input='';G.done=false;G.msg=null;G.opWrong=[];G.state='';G.picked=null;if(ST.voice)setTimeout(()=>speak(p.t+' '+p.q),300)}
+function newProb(){const p=G.probs[G.i];G.loc=nextLoc();G.acc=null;G.accOpts=null;G.phase=(p.op&&WORLDS[p.w-1].opPhase)?'op':'ans';G.tries=0;G.hint=0;G.input='';G.done=false;G.msg=null;G.opWrong=[];G.state='';G.picked=null;if(ST.voice)setTimeout(()=>speak(p.t+' '+p.q,G.loc),300)}
 const hlNums=t=>t.replace(/\d+(?:[:,.\/]\d+)?/g,m=>`<mark>${m}</mark>`);
 const OPNAME={'+':'sumar','−':'restar','×':'multiplicar','÷':'dividir'};
 const OKM=['¡Genial! 🎉','¡Lo has clavado! 🎯','¡Eres una crack! ⭐','¡Muy bien pensado! 🧠','¡Así se hace! 💪','¡Bravo! 👏','¡Toma ya! 🚀'];
@@ -535,7 +558,7 @@ function vPlay(){const p=G.probs[G.i],W=WORLDS[p.w-1];
  const step=G.done?4:(G.phase==='op'?3:(G.hint>=2?3:(G.hint>=1?2:1)));
  let h=`<div class="ptop"><button class="icbtn" style="background:var(--soft)" onclick="quitLevel()" aria-label="Salir">✖️</button><div class="dots">${dots}</div></div>
  <div class="lvtitle">${title}${G.mode==='reto'?` · <span class="tag">${W.emo} ${W.lv[p.l-1]}</span>`:''}</div>
- <div class="card"><button class="say" onclick="speak(G.probs[G.i].t+' '+G.probs[G.i].q)" aria-label="Leer en voz alta">🔊</button>
+ <div class="card"><button class="say" onclick="speak(G.probs[G.i].t+' '+G.probs[G.i].q,G.loc)" aria-label="Leer en voz alta">🔊</button>
  <div class="prob ${G.hint>=2||G.done?'showdata':''}">${hlNums(p.t)}<span class="q ${G.hint>=1?'hl':''}">${p.q}</span></div>${p.fig?`<div class="fig">${p.fig}</div>`:''}
  <div class="steps4">${[['👀','Leo'],['🔎','Datos'],['🤔','Operación'],['✏️','Calculo']].map((s,k)=>`<div class="${k<step?'on':''}"><span>${s[0]}</span>${s[1]}</div>`).join('')}</div></div>`;
  // zona respuesta
@@ -549,7 +572,7 @@ function vPlay(){const p=G.probs[G.i],W=WORLDS[p.w-1];
  if(G.msg)h+=`<div class="mascot"><span class="${G.msg.anim?'bounce':''}">${avatar('m')}</span><div class="bubble">${G.msg.t}</div></div>`;
  // pistas
  h+=`<div class="hints">${hintsHTML(p)}</div>`;
- if(G.done)h+=solHTML(p);
+ if(G.done)h+=solHTML(p)+accHTML();
  // botones
  if(G.done&&!G.res[G.i])h+=`<div class="acts"><button class="btn sec" onclick="redoProb(false)">🔁 Repetir este</button><button class="btn sec" onclick="redoProb(true)">🎲 Otro parecido</button></div>`;
  if(G.done)h+=`<div class="acts"><button class="btn" onclick="nextProb()">${G.i<G.probs.length-1?'Siguiente ➜':'¡Ver resultado! 🏁'}</button></div>`;
@@ -670,7 +693,7 @@ function stuck(){sfx('tap');modal(`<div style="font-size:52px">🆘</div><h2>¿D
  <button onclick="helpCheck()">😖 <span><b>Me sale mal y no sé por qué</b><br><small>He hecho algo pero no es correcto</small></span></button>
  </div><button class="btn sec" style="margin-top:12px" onclick="closeModal()">Cerrar</button>`)}
 function helpBox(title,body){modal(`<h2 style="margin-bottom:10px">${title}</h2><div style="text-align:left;font-weight:600">${body}</div><div class="row" style="justify-content:center;margin-top:14px"><button class="btn sec" onclick="stuck()">⬅ Otra duda</button><button class="btn" onclick="closeModal();vPlay()">¡Ya lo pillo! 💪</button></div>`)}
-function helpRead(){const p=G.probs[G.i];const nums=(p.t.match(/\d+(?:[:,.\/]\d+)?/g)||[]);G.hint=Math.max(G.hint,2);save();speak(p.t+' '+p.q);
+function helpRead(){const p=G.probs[G.i];const nums=(p.t.match(/\d+(?:[:,.\/]\d+)?/g)||[]);G.hint=Math.max(G.hint,2);save();speak(p.t+' '+p.q,G.loc);
  helpBox('😵‍💫 Vamos a entenderlo juntas',`<div class="lbox"><b>1. Te lo leo en voz alta</b> 🔊 (escúchalo con calma, o léelo tú dos veces).</div>
  <div class="lbox"><b>2. Lo que te preguntan es:</b><br><span class="tag" style="font-size:16px">${p.q}</span></div>
  <div class="lbox"><b>3. Los datos (números) que te dan:</b><br>${nums.map(x=>`<span class="tag" style="font-size:16px;margin-right:4px">${x}</span>`).join('')||'—'}</div>
