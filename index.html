@@ -404,11 +404,13 @@ const KEY='mateaventura_v1';
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const FREE_AV=['🦉','🦊','🐱','🐶','🐼','🐰'];
-const DEF=()=>({name:'',avatar:'🦉',acc:'',theme:'morado',coins:0,earned:0,stars:{},stats:{done:0,ok:0,first:0,hints:0,opErr:0,lv:{}},days:[],streak:0,maxStreak:0,lastDay:'',ach:{},owned:[...FREE_AV,'morado'],pin:'',reto:'',retos:0,comeback:0,noHint:0,sound:true,voice:false,unlock:1,shopped:0});
+const NOMBRE='Alejandra';
+const DEF=()=>({name:NOMBRE,avatar:'🦉',acc:'',theme:'morado',coins:0,earned:0,stars:{},stats:{done:0,ok:0,first:0,hints:0,opErr:0,lv:{}},days:[],streak:0,maxStreak:0,lastDay:'',ach:{},owned:[...FREE_AV,'morado'],pin:'',reto:'',retos:0,comeback:0,noHint:0,sound:true,voice:false,unlock:1,shopped:0});
 let ST;try{ST=Object.assign(DEF(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){ST=DEF()}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
 PLAYER=ST.name;
-let SCREEN=ST.name?'map':'welcome', G=null, SHOPTAB='av', PARENT_OK=false;
+if(!ST.name)ST.name=NOMBRE;PLAYER=ST.name;
+let SCREEN=ST.started?'map':'welcome', G=null, SHOPTAB='av', PARENT_OK=false;
 const $=s=>document.querySelector(s);
 
 // ================= TIENDA / LOGROS =================
@@ -483,15 +485,13 @@ function hearts(){cv.width=innerWidth;cv.height=innerHeight;const start=!parts.l
 // ---- bienvenida ----
 let wAv='🦉';
 function vWelcome(){$('#app').innerHTML=`<div class="card center" style="margin-top:30px">
- <div class="bigemo">🧮</div><h1 style="font-size:34px">¡Bienvenida a MateAventura!</h1>
+ <div class="bigemo">🧮</div><h1 style="font-size:34px">¡Hola, ${ST.name}! Bienvenida a MateAventura</h1>
  <p class="mut" style="font-weight:700">Vas a viajar por 8 mundos resolviendo problemas. Cada acierto te da monedas ⭐ y logros 🏆.</p>
- <p style="font-weight:800;margin-bottom:6px">¿Cómo te llamas?</p><input class="txt" id="nm" maxlength="16" placeholder="Tu nombre" autocomplete="off">
  <p style="font-weight:800;margin:16px 0 0">Elige tu compañero de aventura</p>
  <div class="pick">${FREE_AV.map(e=>`<button class="${e===wAv?'on':''}" onclick="wAv='${e}';vWelcomeKeep()">${e}</button>`).join('')}</div>
  <button class="btn" style="width:100%" onclick="startGame()">¡Empezar! 🚀</button></div>`}
-function vWelcomeKeep(){const v=$('#nm').value;vWelcome();$('#nm').value=v;sfx('tap')}
-function startGame(){const n=$('#nm').value.trim();if(!n){$('#nm').focus();$('#nm').style.borderColor='var(--bad)';return}
- ST.name=n;PLAYER=n;ST.avatar=wAv;save();SCREEN='map';render();confetti(80);sfx('win')}
+function vWelcomeKeep(){vWelcome();sfx('tap')}
+function startGame(){ST.started=1;ST.avatar=wAv;save();SCREEN='map';render();confetti(80);sfx('win')}
 
 // ---- mapa ----
 const lvKey=(w,l)=>w+'-'+l;
