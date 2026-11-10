@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#6c4ad6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MateAventura">
+<title>MateAventura · problemas de mates</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--c1:#7b5cff;--c2:#4f3bd1;--soft:#efeaff;--bg:#f7f4ff;--card:#fff;--ink:#22213a;--mut:#6d6b85;--line:#e6e1f5;--ok:#1fae6b;--okbg:#e2f8ec;--bad:#e5484d;--badbg:#fdecec;--gold:#ffb703;--sh:0 6px 0 rgba(40,20,120,.12),0 10px 24px rgba(40,20,120,.10)}
+body[data-theme=oceano]{--c1:#22b8f0;--c2:#0a6fc2;--soft:#e3f5ff;--bg:#f2faff}
+body[data-theme=bosque]{--c1:#3fbf6a;--c2:#1d7a45;--soft:#e4f7ea;--bg:#f3fbf5}
+body[data-theme=atardecer]{--c1:#ff8a4c;--c2:#e2366b;--soft:#ffece3;--bg:#fff7f2}
+body[data-theme=noche]{--c1:#6f7cff;--c2:#28307a;--soft:#2a2f55;--bg:#151833;--card:#20244a;--ink:#f1f1ff;--mut:#a9acd6;--line:#343a6e;--okbg:#173a2c;--badbg:#3d1d24}
+body[data-theme=chuches]{--c1:#ff6fb5;--c2:#a24bff;--soft:#ffe8f5;--bg:#fff5fb}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:Nunito,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.45;overscroll-behavior:none}
+h1,h2,h3,.big{font-family:'Baloo 2',Nunito,sans-serif;line-height:1.15;margin:0}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px 110px}
+/* barra superior */
+.top{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;padding:10px 14px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.top .in{max-width:720px;margin:auto;display:flex;align-items:center;gap:10px}
+.who{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.who b{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:rgba(255,255,255,.2);border-radius:999px;padding:4px 10px;font-weight:800;font-size:15px;white-space:nowrap;display:flex;gap:4px;align-items:center}
+.icbtn{background:rgba(255,255,255,.2);border-radius:12px;width:36px;height:36px;font-size:18px;display:grid;place-items:center}
+/* avatar */
+.av{position:relative;display:inline-grid;place-items:center;border-radius:50%;background:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
+.av .e{line-height:1}
+.av .acc{position:absolute;top:-22%;right:-14%;line-height:1;transform:rotate(14deg)}
+.av.s{width:40px;height:40px}.av.s .e{font-size:26px}.av.s .acc{font-size:18px}
+.av.m{width:84px;height:84px}.av.m .e{font-size:54px}.av.m .acc{font-size:34px}
+.av.l{width:120px;height:120px}.av.l .e{font-size:78px}.av.l .acc{font-size:46px}
+/* navegación inferior */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--card);border-top:2px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+.nav .in{max-width:720px;margin:auto;display:flex;justify-content:space-around}
+.nav button{background:none;display:flex;flex-direction:column;align-items:center;font-size:12px;font-weight:800;color:var(--mut);padding:4px 8px;border-radius:12px;min-width:62px}
+.nav button span{font-size:24px;line-height:1.1}
+.nav button.on{color:var(--c2);background:var(--soft)}
+body[data-theme=noche] .nav button.on{color:#fff}
+/* tarjetas */
+.card{background:var(--card);border-radius:22px;padding:18px;box-shadow:var(--sh);margin:16px 0}
+.btn{background:linear-gradient(180deg,var(--c1),var(--c2));color:#fff;font-weight:800;font-size:18px;padding:13px 22px;border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn.sec{background:var(--soft);color:var(--c2);box-shadow:0 5px 0 var(--line)}
+body[data-theme=noche] .btn.sec{color:#fff}
+.btn.gold{background:linear-gradient(180deg,#ffd166,#f4a100);color:#5a3a00}
+.btn:disabled{opacity:.45}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.mut{color:var(--mut)}.small{font-size:14px}
+.center{text-align:center}
+/* mapa */
+.hello{display:flex;gap:14px;align-items:center;margin-top:16px}
+.bubble{background:var(--card);border-radius:18px;padding:12px 14px;box-shadow:var(--sh);position:relative;font-weight:700;flex:1}
+.bubble:before{content:"";position:absolute;left:-9px;top:22px;border:10px solid transparent;border-right-color:var(--card);border-left:0}
+.world{border-radius:26px;padding:16px 16px 18px;margin:18px 0;color:#fff;box-shadow:var(--sh);position:relative;overflow:hidden}
+.world h2{font-size:24px;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.world .wdesc{opacity:.92;font-weight:700;font-size:15px}
+.world .wemo{position:absolute;right:10px;top:4px;font-size:64px;opacity:.9;filter:drop-shadow(0 4px 0 rgba(0,0,0,.15))}
+.world.locked{filter:grayscale(.85);opacity:.7}
+.path{display:flex;justify-content:space-between;margin-top:14px;gap:6px}
+.node{width:60px;height:60px;border-radius:50%;background:#fff;color:var(--ink);font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-weight:800;font-size:24px;display:grid;place-items:center;box-shadow:0 5px 0 rgba(0,0,0,.2);position:relative;flex:0 0 auto}
+.node:nth-child(even){margin-top:22px}
+.node.boss{border:4px solid var(--gold)}
+.node.lock{background:rgba(255,255,255,.35);color:#fff;box-shadow:none;font-size:20px}
+.node.cur{animation:pulse 1.4s infinite}
+.node .st{position:absolute;bottom:-17px;font-size:12px;letter-spacing:-2px;white-space:nowrap}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.daily{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#ffd166,#ff9f1c);color:#4a2c00;border-radius:22px;padding:14px 16px;box-shadow:var(--sh);margin-top:16px;width:100%;text-align:left}
+.daily .big{font-size:22px}
+/* juego */
+.ptop{display:flex;align-items:center;gap:10px;margin-top:14px}
+.dots{display:flex;gap:6px;flex:1}
+.dot{flex:1;height:12px;border-radius:9px;background:var(--line)}
+.dot.ok{background:var(--ok)}.dot.ko{background:var(--bad)}.dot.now{background:var(--c1);animation:pulse 1.4s infinite}
+.lvtitle{font-weight:800;color:var(--mut);font-size:14px;margin-top:6px}
+.prob{font-size:21px;font-weight:700;line-height:1.5}
+.prob .q{display:block;margin-top:8px;color:var(--c2)}
+body[data-theme=noche] .prob .q{color:#c9ccff}
+.prob .q.hl{background:#fff3b0;border-radius:8px;padding:2px 6px;color:#5a3a00}
+.prob mark{background:none;color:inherit}
+.prob.showdata mark{background:#fff3b0;color:#5a3a00;border-radius:6px;padding:0 4px;box-shadow:0 0 0 2px #ffd166}
+.fig{display:flex;justify-content:center;margin-top:10px}
+.fig svg{max-width:100%;height:auto}
+.say{background:var(--soft);border-radius:12px;width:44px;height:44px;font-size:22px;float:right;margin:0 0 6px 10px}
+.ops{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.op{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:40px;font-weight:800;background:var(--card);border-radius:18px;padding:6px 0;box-shadow:0 5px 0 var(--line);border:3px solid var(--line);color:var(--c2)}
+.op small{display:block;font-family:Nunito;font-size:12px;color:var(--mut);margin-top:-6px}
+.op.no{border-color:var(--bad);background:var(--badbg);animation:shake .4s}
+.op.yes{border-color:var(--ok);background:var(--okbg)}
+.ansbox{display:flex;align-items:center;gap:10px;justify-content:center;margin:6px 0 12px}
+.disp{min-width:160px;font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:40px;font-weight:800;text-align:center;background:var(--card);border:3px solid var(--line);border-radius:18px;padding:2px 16px;min-height:66px}
+.disp.no{border-color:var(--bad);animation:shake .4s}.disp.yes{border-color:var(--ok);background:var(--okbg)}
+.unit{font-weight:800;font-size:20px;color:var(--mut)}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:360px;margin:auto}
+.kp button{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:28px;font-weight:800;background:var(--card);border-radius:16px;padding:6px 0;box-shadow:0 4px 0 var(--line);border:2px solid var(--line)}
+.kp button:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:28px;font-weight:800;background:var(--card);border:3px solid var(--line);border-radius:18px;padding:10px;box-shadow:0 5px 0 var(--line)}
+.choice.no{border-color:var(--bad);background:var(--badbg);animation:shake .4s}.choice.yes{border-color:var(--ok);background:var(--okbg)}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.acts{display:flex;gap:10px;margin-top:14px}
+.acts .btn{flex:1}
+.hints{margin-top:12px}
+.hint{background:#fff8d6;color:#4f3b00;border-radius:14px;padding:10px 12px;margin-top:8px;font-weight:700;border-left:6px solid #ffd166;animation:pop .3s}
+.hint b{color:#9a6500}
+.sol{background:var(--okbg);border-radius:16px;padding:12px 14px;margin-top:12px;border-left:6px solid var(--ok);animation:pop .3s}
+.sol.bad{background:var(--badbg);border-left-color:var(--bad)}
+.calc{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:22px;font-weight:700}
+@keyframes pop{0%{transform:scale(.85);opacity:0}100%{transform:scale(1);opacity:1}}
+.steps4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.steps4 div{background:var(--soft);border-radius:12px;padding:6px 4px;text-align:center;font-size:12px;font-weight:800;color:var(--mut)}
+.steps4 div.on{background:var(--c1);color:#fff}
+.steps4 div span{display:block;font-size:20px}
+.mascot{display:flex;gap:10px;align-items:center;margin-top:12px}
+.mascot .bubble{font-size:17px}
+.bounce{animation:bounce .6s}
+@keyframes bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-16px)}60%{transform:translateY(0)}80%{transform:translateY(-6px)}}
+.coinfly{position:fixed;z-index:60;font-size:28px;font-weight:900;color:var(--gold);text-shadow:0 2px 0 #7a4b00;pointer-events:none;animation:fly 1s forwards}
+@keyframes fly{0%{transform:translateY(0) scale(.6);opacity:0}20%{opacity:1;transform:translateY(-10px) scale(1.2)}100%{transform:translateY(-120px) scale(1);opacity:0}}
+/* final de nivel */
+.stars{display:flex;justify-content:center;gap:8px;font-size:62px;margin:10px 0}
+.stars span{filter:grayscale(1);opacity:.3;transform:scale(.6)}
+.stars span.on{filter:none;opacity:1;animation:starIn .5s forwards}
+@keyframes starIn{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.3) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.res{display:flex;justify-content:center;gap:6px;font-size:28px;margin:8px 0}
+/* logros y tienda */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge{background:var(--card);border-radius:18px;padding:12px;text-align:center;box-shadow:var(--sh)}
+.badge .i{font-size:46px;line-height:1.2}
+.badge.off .i{filter:grayscale(1);opacity:.3}
+.badge b{display:block;font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:17px}
+.badge.off b{color:var(--mut)}
+.badge p{margin:2px 0 0;font-size:13px;color:var(--mut)}
+.tabs{display:flex;gap:8px;margin:14px 0;overflow-x:auto}
+.tabs button{background:var(--card);border-radius:999px;padding:8px 14px;font-weight:800;box-shadow:0 3px 0 var(--line);white-space:nowrap}
+.tabs button.on{background:var(--c1);color:#fff}
+.item{background:var(--card);border-radius:18px;padding:12px;text-align:center;box-shadow:var(--sh);display:flex;flex-direction:column;gap:6px;align-items:center}
+.item .i{font-size:50px;line-height:1.2}
+.item .sw{width:60px;height:60px;border-radius:50%}
+.item .btn{font-size:15px;padding:8px 12px;width:100%}
+/* modales */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(20,10,60,.55);display:grid;place-items:center;padding:20px;animation:fade .2s}
+.modal .card{max-width:380px;width:100%;text-align:center;animation:pop .35s}
+@keyframes fade{from{opacity:0}}
+.bigemo{font-size:80px;line-height:1.1;animation:bounce 1s infinite}
+input.txt{font:inherit;font-size:20px;font-weight:700;padding:12px 14px;border-radius:14px;border:3px solid var(--line);width:100%;background:var(--card);color:var(--ink)}
+.pick{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
+.pick button{font-size:42px;width:70px;height:70px;border-radius:50%;background:var(--soft);border:3px solid transparent}
+.pick button.on{border-color:var(--c1);background:var(--card);transform:scale(1.08)}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mut);font-size:13px}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--ok)}
+canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:70}
+.h2{font-size:28px;margin-top:18px}
+.tag{display:inline-block;background:var(--soft);color:var(--c2);border-radius:8px;padding:2px 8px;font-size:13px;font-weight:800}
+.wlearn{margin-top:10px;background:rgba(255,255,255,.25);color:#fff;font-weight:800;border-radius:12px;padding:6px 12px;font-size:14px}
+.lbox{background:var(--soft);border-radius:14px;padding:10px 12px;margin-top:10px}
+.lbox.ex{background:#fff8d6;color:#4f3b00}.lbox.why{background:var(--okbg)}
+.stuckbtn{display:block;width:100%;margin-top:14px;background:var(--card);border:3px dashed var(--c1);color:var(--c2);font-weight:800;font-size:17px;border-radius:16px;padding:10px}
+body[data-theme=noche] .stuckbtn{color:#fff}
+.stuck{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.stuck button{display:flex;gap:10px;align-items:center;text-align:left;background:var(--soft);border-radius:14px;padding:10px 12px;font-size:26px;border:2px solid transparent}
+.stuck button:active{border-color:var(--c1)}
+.stuck button span{font-size:16px;line-height:1.25}.stuck small{color:var(--mut);font-weight:600}
+.tree div{background:var(--soft);border-radius:12px;padding:8px 10px;margin-top:6px;display:flex;gap:10px;align-items:center}
+.opb{font-family:'Baloo 2',Nunito,system-ui,sans-serif;font-size:28px;font-weight:800;color:var(--c2);min-width:26px;text-align:center}
+.modal .card{max-height:88vh;overflow:auto}
+.msgday{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#ffe3ec,#ffd0df);color:#6b1238;border-radius:22px;padding:12px 16px;box-shadow:var(--sh);margin-top:14px}
+.letter{background:#fff8f0;color:#4a2a1a;border-radius:16px;padding:14px 16px;text-align:left;font-weight:700;border:2px dashed #ffb3c6;margin-top:6px}
+.letter p{font-family:'Baloo 2',Nunito,sans-serif;font-size:22px;line-height:1.3;margin:8px 0;color:#b0275e}
+.letter .sign{text-align:right;font-size:15px}
+</style>
+</head>
+<body data-theme="morado">
+<div id="top"></div>
+<div id="app" class="wrap"></div>
+<div id="nav"></div>
+<div id="modal"></div>
+<canvas id="fx"></canvas>
+
+<script>
+/*GEN-START*/
+// ---------- utilidades ----------
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd2=x=>Math.round(x*100)/100;
+const fmt=x=>{x=rnd2(x);return x.toLocaleString('es-ES',{maximumFractionDigits:2})};
+const eur=c=>(c/100).toLocaleString('es-ES',{minimumFractionDigits:c%100?2:0,maximumFractionDigits:2});
+const hm=m=>{m=((m%1440)+1440)%1440;return Math.floor(m/60)+':'+String(m%60).padStart(2,'0')};
+const NOMBRES=['Lucía','Mateo','Sara','Hugo','Martina','Leo','Daniela','Pablo','Valeria','Álvaro','Carmen','Marcos','Noa','Iker','Alba','Daniel','Julia','Adrián','Paula','Manuel','Vega','Bruno'];
+let PLAYER='';
+const N=()=>(PLAYER&&Math.random()<.15)?PLAYER:pick(NOMBRES);
+const N2=()=>{const a=N();let b;do{b=pick(NOMBRES)}while(b===a);return [a,b]};
+const OPF={'+':(a,b)=>a+b,'−':(a,b)=>a-b,'×':(a,b)=>a*b,'÷':(a,b)=>a/b};
+// problema de un paso: plantilla => [enunciado, pregunta, unidad, plan, x?, y?]
+function one(tpl,a,b,op){const r=tpl(a,b,N());const x=r[4]??a,y=r[5]??b;const res=rnd2(OPF[op](x,y));
+  return {t:r[0],q:r[1],u:r[2],p:r[3],op,c:[[`${fmt(x)} ${op} ${fmt(y)}`,res]],a:res}}
+function uniqChoices(ans,wrongs){const s=[ans];for(const w of wrongs){if(!s.includes(w)&&s.length<4)s.push(w)}return shuffle(s)}
+
+// ---------- figuras ----------
+function figRect(l,w,u,col){const s=Math.min(190/l,100/w),W=l*s,H=w*s,x=(270-W)/2,y=14;
+  return `<svg viewBox="0 0 270 ${H+56}" width="270"><rect x="${x}" y="${y}" width="${W}" height="${H}" rx="4" fill="${col||'#c9f2d6'}" stroke="#2f7d4f" stroke-width="3"/>
+  <text x="135" y="${y+H+26}" text-anchor="middle" font-size="17" font-weight="800" fill="currentColor">${fmt(l)} ${u}</text>
+  <text x="${x+W+8}" y="${y+H/2+6}" font-size="17" font-weight="800" fill="currentColor">${fmt(w)} ${u}</text></svg>`}
+function figTri(b,h,u){const s=Math.min(190/b,110/h),W=b*s,H=h*s,x=(270-W)/2,y=12,ax=x+W*.35;
+  return `<svg viewBox="0 0 270 ${H+52}" width="270"><polygon points="${x},${y+H} ${x+W},${y+H} ${ax},${y}" fill="#ffe1a8" stroke="#c77d00" stroke-width="3"/>
+  <line x1="${ax}" y1="${y}" x2="${ax}" y2="${y+H}" stroke="#c77d00" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="135" y="${y+H+26}" text-anchor="middle" font-size="17" font-weight="800" fill="currentColor">base ${fmt(b)} ${u}</text>
+  <text x="${ax+6}" y="${y+H/2+6}" font-size="16" font-weight="800" fill="currentColor">altura ${fmt(h)} ${u}</text></svg>`}
+function figL(a,b,c,d){const s=Math.min(200/(a+c),110/Math.max(b,d)),x=20,base=14+Math.max(b,d)*s;
+  return `<svg viewBox="0 0 270 ${base+36}" width="270"><rect x="${x}" y="${base-b*s}" width="${a*s}" height="${b*s}" fill="#c9e4ff" stroke="#1f6fb2" stroke-width="3"/>
+  <rect x="${x+a*s}" y="${base-d*s}" width="${c*s}" height="${d*s}" fill="#ffd6e7" stroke="#b2306a" stroke-width="3"/>
+  <text x="${x+a*s/2}" y="${base+24}" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">${a}×${b} m</text>
+  <text x="${x+a*s+c*s/2}" y="${base+24}" text-anchor="middle" font-size="15" font-weight="800" fill="currentColor">${c}×${d} m</text></svg>`}
+
+// ---------- MUNDO 1: sumas y restas ----------
+const ADD=[
+ (a,b,n)=>[`${n} tiene ${a} cromos y su prima le regala ${b} más.`,'¿Cuántos cromos tiene ahora?','cromos','Le dan más cromos: juntamos las dos cantidades. ¡Sumamos!'],
+ (a,b)=>[`En el parque hay ${a} niños jugando y llegan ${b} más.`,'¿Cuántos niños hay ahora en el parque?','niños','Llegan más niños: juntamos. ¡Sumamos!'],
+ (a,b,n)=>[`${n} lee ${a} páginas el sábado y ${b} páginas el domingo.`,'¿Cuántas páginas lee en todo el fin de semana?','páginas','Nos preguntan el total de los dos días: sumamos.'],
+ (a,b)=>[`En una granja hay ${a} gallinas y ${b} patos.`,'¿Cuántas aves hay en total?','aves','"En total" significa juntar todo: sumamos.'],
+ (a,b)=>[`Un equipo de baloncesto marca ${a} puntos en la primera parte y ${b} en la segunda.`,'¿Cuántos puntos marca en todo el partido?','puntos','Juntamos los puntos de las dos partes: sumamos.'],
+];
+const SUB=[
+ (a,b,n)=>[`${n} tenía ${a} canicas y ha perdido ${b}.`,'¿Cuántas canicas le quedan?','canicas','Ha perdido canicas: ahora tiene menos. ¡Restamos!'],
+ (a,b)=>[`En un autobús van ${a} personas. En una parada se bajan ${b}.`,'¿Cuántas personas quedan en el autobús?','personas','Se bajan personas: quedan menos. Restamos.'],
+ (a,b)=>[`En una caja hay ${a} galletas y nos comemos ${b}.`,'¿Cuántas galletas quedan en la caja?','galletas','Nos comemos algunas: quedan menos. Restamos.'],
+ (a,b,n)=>[`Un libro tiene ${a} páginas y ${n} ya ha leído ${b}.`,'¿Cuántas páginas le quedan por leer?','páginas','Lo que queda por leer es el total menos lo leído: restamos.'],
+ (a,b)=>[`En el cine hay ${a} butacas y ${b} están ocupadas.`,'¿Cuántas butacas están libres?','butacas','Las libres son todas menos las ocupadas: restamos.'],
+];
+const W1=[
+ ()=>{const a=R(3,12),b=R(2,9);return one(pick(ADD),a,b,'+')},
+ ()=>{const a=R(15,50),b=R(3,a-4);return one(pick(SUB),a,b,'−')},
+ ()=>Math.random()<.5?one(pick(ADD),R(12,60),R(8,39),'+'):(()=>{const a=R(40,99);return one(pick(SUB),a,R(10,a-8),'−')})(),
+ ()=>Math.random()<.5?one(pick(ADD),R(120,560),R(105,430),'+'):(()=>{const a=R(300,999);return one(pick(SUB),a,R(110,a-50),'−')})(),
+ ()=>{const k=R(0,4);const [n1,n2]=N2();
+  if(k===0){const a=R(40,120),b=R(12,a-10);return {t:`${n1} quiere tener ${a} cromos para completar su álbum. Ya tiene ${b}.`,q:'¿Cuántos cromos le faltan?',u:'cromos',op:'−',p:'¡Cuidado! "Completar" suena a sumar, pero preguntan cuánto FALTA: lo que quiere menos lo que ya tiene. Restamos.',c:[[`${a} − ${b}`,a-b]],a:a-b}}
+  if(k===1){const b=R(15,80),c=R(5,40);return {t:`${n1} tiene ${b} € ahorrados. ${n2} tiene ${c} € más que ${n1}.`,q:`¿Cuánto dinero tiene ${n2}?`,u:'€',op:'+',p:`"${c} € más que" quiere decir que ${n2} tiene lo de ${n1} y ${c} más. Sumamos.`,c:[[`${b} + ${c}`,b+c]],a:b+c}}
+  if(k===2){const a=R(135,165),b=R(118,a-4);return {t:`${n1} mide ${a} cm y ${n2} mide ${b} cm.`,q:`¿Cuántos centímetros más alto es ${n1}?`,u:'cm',op:'−',p:'Para saber cuánto más tiene uno que otro, restamos el mayor menos el menor (la diferencia).',c:[[`${a} − ${b}`,a-b]],a:a-b}}
+  if(k===3){const b=R(10,60),a=b+R(20,90);return {t:`${n1} ha ganado ${b} puntos en un videojuego y ahora tiene ${a} puntos.`,q:'¿Cuántos puntos tenía antes de ganar?',u:'puntos',op:'−',p:'Ahora tiene más porque ha ganado. Para volver a ANTES, quitamos lo que ganó: restamos.',c:[[`${a} − ${b}`,a-b]],a:a-b}}
+  const a=R(40,90),b=R(8,a-15);return {t:`En la biblioteca de 6.º A hay ${a} libros y en la de 6.º B hay ${b} libros menos.`,q:'¿Cuántos libros hay en la de 6.º B?',u:'libros',op:'−',p:`"${b} libros menos" significa que hay que quitar ${b}. Restamos.`,c:[[`${a} − ${b}`,a-b]],a:a-b}},
+];
+
+// ---------- MUNDO 2: multiplicar y dividir ----------
+const MUL=[
+ (a,b)=>[`En una caja de bombones hay ${a} filas con ${b} bombones en cada fila.`,'¿Cuántos bombones hay en la caja?','bombones','Se repite la misma cantidad varias veces: multiplicamos.'],
+ (a,b,n)=>[`${n} compra ${a} paquetes de pegatinas. Cada paquete trae ${b} pegatinas.`,'¿Cuántas pegatinas tiene en total?','pegatinas',`${a} veces ${b}: multiplicamos.`],
+ (a)=>[`Una araña tiene 8 patas.`,`¿Cuántas patas tienen ${a} arañas?`,'patas',`Cada araña tiene 8 patas y hay ${a} arañas: ${a} veces 8. Multiplicamos.`,a,8],
+ (a)=>[`Una semana tiene 7 días.`,`¿Cuántos días hay en ${a} semanas?`,'días',`${a} semanas de 7 días: multiplicamos.`,a,7],
+ (a,b)=>[`En el salón de actos hay ${a} filas de ${b} sillas.`,'¿Cuántas sillas hay en total?','sillas','Filas iguales: multiplicamos filas por sillas de cada fila.'],
+];
+const DIV=[
+ (T,b,n)=>[`${n} reparte ${T} caramelos entre ${b} amigos, a partes iguales.`,'¿Cuántos caramelos recibe cada amigo?','caramelos','Repartir a partes iguales es dividir.'],
+ (T,b)=>[`En clase hay ${T} alumnos y la profe hace grupos de ${b}.`,'¿Cuántos grupos salen?','grupos',`¿Cuántas veces cabe ${b} en ${T}? Dividimos.`],
+ (T,b)=>[`Ponemos ${T} galletas en ${b} platos, con las mismas galletas en cada plato.`,'¿Cuántas galletas hay en cada plato?','galletas','Repartir en partes iguales: dividimos.'],
+ (T,b,n)=>[`${n} tiene ${T} fotos y en cada página de su álbum caben ${b}.`,'¿Cuántas páginas llena?','páginas',`Hacemos montones de ${b}: dividimos.`],
+];
+const divP=(q,b)=>one(pick(DIV),q*b,b,'÷');
+const W2=[
+ ()=>one(pick(MUL),R(2,9),R(2,9),'×'),
+ ()=>divP(R(2,10),R(2,9)),
+ ()=>Math.random()<.5?one(pick(MUL),R(3,10),R(3,10),'×'):divP(R(3,10),R(3,10)),
+ ()=>Math.random()<.5?one(pick(MUL),R(12,95),R(3,9),'×'):divP(R(12,120),R(3,9)),
+ ()=>{const k=R(0,2);
+  if(k===0){const c=R(4,6),N0=c*R(4,9)+R(1,c-1),q=Math.floor(N0/c),r=N0%c;return {t:`${N0} alumnos van de excursión en coches. En cada coche caben ${c} alumnos.`,q:'¿Cuántos coches hacen falta como mínimo?',u:'coches',op:'÷',p:`Dividimos ${N0} entre ${c}. ¡Pero ojo! Si sobran alumnos, necesitan otro coche más.`,c:[`${N0} ÷ ${c} = ${q} y sobran ${r}`,[`${q} + 1 (para los ${r} que sobran)`,q+1]],a:q+1}}
+  if(k===1){const N0=6*R(4,15)+R(1,5),q=Math.floor(N0/6);return {t:`En la granja recogen ${N0} huevos y los ponen en hueveras de 6.`,q:'¿Cuántas hueveras se llenan completas?',u:'hueveras',op:'÷',p:'Hacemos grupos de 6: dividimos. Solo cuentan las hueveras llenas, lo que sobra no llena otra.',c:[[`${N0} ÷ 6`,q+' y sobran '+(N0%6)],[`Hueveras completas`,q]],a:q}}
+  const b=R(3,8),N0=b*R(5,12)+R(1,b-1),r=N0%b;return {t:`${N()} reparte ${N0} cromos entre ${b} amigos, todos con el mismo número de cromos.`,q:'¿Cuántos cromos le sobran?',u:'cromos',op:'÷',p:'Repartimos dividiendo. Lo que sobra es el RESTO de la división.',c:[`${N0} ÷ ${b} = ${Math.floor(N0/b)} y sobran ${r}`,[`Resto`,r]],a:r}},
+];
+
+// ---------- MUNDO 3: problemas de dos pasos ----------
+const W3=[
+ ()=>{const a=R(10,60),b=R(5,30),c=R(5,a+b-4);if(Math.random()<.5){const n=N();return {t:`${n} tenía ${a} € en su hucha. Su abuela le da ${b} € y después se gasta ${c} € en un libro.`,q:'¿Cuánto dinero le queda?',u:'€',p:'Paso 1: sumamos lo que le dan. Paso 2: restamos lo que gasta.',c:[[`${a} + ${b}`,a+b],[`${a+b} − ${c}`,a+b-c]],a:a+b-c}}
+  return {t:`En un autobús van ${a} personas. En la primera parada suben ${b} y en la segunda bajan ${c}.`,q:'¿Cuántas personas van ahora en el autobús?',u:'personas',p:'Paso 1: suben (sumamos). Paso 2: bajan (restamos).',c:[[`${a} + ${b}`,a+b],[`${a+b} − ${c}`,a+b-c]],a:a+b-c}},
+ ()=>{const a=R(2,6),b=R(6,12),c=R(3,20);if(Math.random()<.5)return {t:`En clase compramos ${a} cajas de ${b} lápices. Ya teníamos ${c} lápices.`,q:'¿Cuántos lápices tenemos ahora?',u:'lápices',p:'Paso 1: multiplicamos para saber cuántos lápices hay en las cajas. Paso 2: sumamos los que ya teníamos.',c:[[`${a} × ${b}`,a*b],[`${a*b} + ${c}`,a*b+c]],a:a*b+c};
+  const cc=R(2,a*b-3);return {t:`En un huerto hay ${a} filas de ${b} lechugas. Los caracoles se comen ${cc} lechugas.`,q:'¿Cuántas lechugas quedan sanas?',u:'lechugas',p:'Paso 1: multiplicamos para saber cuántas lechugas había. Paso 2: restamos las que se comen.',c:[[`${a} × ${b}`,a*b],[`${a*b} − ${cc}`,a*b-cc]],a:a*b-cc}},
+ ()=>{const a=R(2,5),p=R(2,6),B=[10,20,50].find(x=>x>a*p);return {t:`${N()} compra ${a} cuadernos a ${p} € cada uno y paga con un billete de ${B} €.`,q:'¿Cuánto dinero le devuelven?',u:'€',p:'Paso 1: multiplicamos para saber cuánto cuestan los cuadernos. Paso 2: restamos ese precio al billete.',c:[[`${a} × ${p}`,a*p],[`${B} − ${a*p}`,B-a*p]],a:B-a*p}},
+ ()=>{const k=R(3,6);if(Math.random()<.5){const tot=k*R(4,8),a=R(Math.ceil(tot/3),Math.floor(tot*2/3)),b=tot-a;return {t:`En una clase hay ${a} chicas y ${b} chicos. La profe hace equipos de ${k}.`,q:'¿Cuántos equipos salen?',u:'equipos',p:'Paso 1: sumamos para saber cuántos alumnos hay. Paso 2: dividimos entre los que van en cada equipo.',c:[[`${a} + ${b}`,tot],[`${tot} ÷ ${k}`,tot/k]],a:tot/k}}
+  const q=R(5,15),T=q*k,c=R(3,20);return {t:`${N()} reparte ${T} cromos a partes iguales entre ${k} amigos. Uno de ellos ya tenía ${c} cromos.`,q:'¿Cuántos cromos tiene ahora ese amigo?',u:'cromos',p:'Paso 1: dividimos para saber cuántos le tocan. Paso 2: sumamos los que ya tenía.',c:[[`${T} ÷ ${k}`,q],[`${q} + ${c}`,q+c]],a:q+c}},
+ ()=>{if(Math.random()<.5){const p=R(6,9),q=R(3,5),x=R(2,3),y=R(2,4);return {t:`En el cine, la entrada de adulto cuesta ${p} € y la de niño ${q} €. Van ${x} adultos y ${y} niños.`,q:'¿Cuánto pagan en total?',u:'€',p:'Paso 1: lo que pagan los adultos (multiplicar). Paso 2: lo que pagan los niños (multiplicar). Paso 3: sumamos.',c:[[`${x} × ${p}`,x*p],[`${y} × ${q}`,y*q],[`${x*p} + ${y*q}`,x*p+y*q]],a:x*p+y*q}}
+  const a=R(3,8),w=R(3,9),c=R(5,20),G=c+a*w;return {t:`${N()} quiere comprar un juego de ${G} €. Ya tiene ${c} € y ahorra ${a} € cada semana.`,q:'¿Cuántas semanas tiene que ahorrar?',u:'semanas',p:'Paso 1: restamos para saber cuánto le falta. Paso 2: dividimos lo que falta entre lo que ahorra cada semana.',c:[[`${G} − ${c}`,G-c],[`${G-c} ÷ ${a}`,w]],a:w}},
+];
+
+// ---------- MUNDO 4: dinero (decimales) ----------
+const C5=(a,b)=>5*R(a/5,b/5);
+const COSAS=[['un bocadillo','un zumo'],['un cuaderno','un bolígrafo'],['una entrada de cine','unas palomitas'],['un libro','un marcapáginas'],['una camiseta','una gorra']];
+const W4=[
+ ()=>{const [x,y]=pick(COSAS),p1=C5(150,900),p2=C5(50,450);return {t:`${x[0].toUpperCase()+x.slice(1)} cuesta ${eur(p1)} € y ${y} cuesta ${eur(p2)} €.`,q:'¿Cuánto cuestan las dos cosas juntas?',u:'€',op:'+',p:'Juntamos los dos precios: sumamos. Coloca bien la coma: euros con euros y céntimos con céntimos.',c:[[`${eur(p1)} + ${eur(p2)}`,(p1+p2)/100]],a:(p1+p2)/100}},
+ ()=>{const p=C5(120,1850),B=[500,1000,2000].find(x=>x>p);const it=pick(['un libro','un puzle','una mochila','un balón','unas pinturas']);return {t:`${N()} compra ${it} de ${eur(p)} € y paga con un billete de ${B/100} €.`,q:'¿Cuánto dinero le devuelven?',u:'€',op:'−',p:'El cambio es lo que pagas menos lo que cuesta: restamos.',c:[[`${B/100} − ${eur(p)}`,(B-p)/100]],a:(B-p)/100}},
+ ()=>{const p=C5(55,350),k=R(2,6);const it=pick([['helado','helados'],['cuaderno','cuadernos'],['croissant','croissants'],['sobre de cromos','sobres de cromos']]);return {t:`Un ${it[0]} cuesta ${eur(p)} €.`,q:`¿Cuánto cuestan ${k} ${it[1]}?`,u:'€',op:'×',p:`El mismo precio se repite ${k} veces: multiplicamos.`,c:[[`${eur(p)} × ${k}`,p*k/100]],a:p*k/100}},
+ ()=>{const k=R(2,5),per=C5(150,650),T=per*k;const it=pick(['una pizza familiar','un regalo para su profe','una tarta','las entradas del zoo']);return {t:`${k} amigos compran ${it} por ${eur(T)} € y lo pagan a partes iguales.`,q:'¿Cuánto paga cada uno?',u:'€',op:'÷',p:'Repartir el precio a partes iguales: dividimos.',c:[[`${eur(T)} ÷ ${k}`,per/100]],a:per/100}},
+ ()=>{const k=R(0,2);
+  if(k===0){const p=C5(60,300),q=R(2,4),M=[1000,2000].find(x=>x>p*q+100);return {t:`${N()} tiene ${M/100} € y compra ${q} cuadernos a ${eur(p)} € cada uno.`,q:'¿Cuánto dinero le sobra?',u:'€',p:'Paso 1: multiplicamos para saber cuánto gasta. Paso 2: restamos al dinero que tenía.',c:[[`${q} × ${eur(p)}`,p*q/100],[`${M/100} − ${eur(p*q)}`,(M-p*q)/100]],a:(M-p*q)/100}}
+  if(k===1){const A=C5(900,2500),d=C5(150,600);return {t:`Una camiseta costaba ${eur(A)} € y la rebajan ${eur(d)} €. ${N()} compra 2 camisetas rebajadas.`,q:'¿Cuánto paga?',u:'€',p:'Paso 1: restamos para saber el precio rebajado. Paso 2: multiplicamos por 2.',c:[[`${eur(A)} − ${eur(d)}`,(A-d)/100],[`${eur(A-d)} × 2`,(A-d)*2/100]],a:(A-d)*2/100}}
+  const P=C5(3000,7000),M=C5(800,2500),G=C5(500,1500);return {t:`${N()} quiere comprar unas zapatillas de ${eur(P)} €. Tiene ${eur(M)} € y su tía le regala ${eur(G)} €.`,q:'¿Cuánto dinero le falta todavía?',u:'€',p:'Paso 1: sumamos el dinero que tiene. Paso 2: restamos al precio para saber lo que falta.',c:[[`${eur(M)} + ${eur(G)}`,(M+G)/100],[`${eur(P)} − ${eur(M+G)}`,(P-M-G)/100]],a:(P-M-G)/100}},
+];
+
+// ---------- MUNDO 5: fracciones ----------
+const FR={2:'la mitad',3:'un tercio',4:'la cuarta parte',5:'la quinta parte',10:'la décima parte'};
+const W5=[
+ ()=>{const b=pick([2,3,4,5,10]),q=R(2,12),T=q*b;const n=N();const o=pick([
+  {t:`${n} tiene ${T} canicas y le regala ${FR[b]} a su primo.`,q:'¿Cuántas canicas le regala?',u:'canicas'},
+  {t:`En una clase de ${T} alumnos, ${FR[b]} lleva gafas.`,q:'¿Cuántos alumnos llevan gafas?',u:'alumnos'},
+  {t:`Una bolsa tiene ${T} caramelos y ${n} se come ${FR[b]}.`,q:'¿Cuántos caramelos se come?',u:'caramelos'}]);
+  return Object.assign(o,{op:'÷',p:`${FR[b][0].toUpperCase()+FR[b].slice(1)} es 1/${b}: dividimos entre ${b}.`,c:[[`${T} ÷ ${b}`,q]],a:q})},
+ ()=>{const b=pick([3,4,5,6,8,10]),a=R(2,b-1),q=R(2,10),T=q*b;const o=pick([
+  {t:`Van de excursión ${T} alumnos y ${a}/${b} de ellos van en autobús.`,q:'¿Cuántos alumnos van en autobús?',u:'alumnos'},
+  {t:`Un depósito tiene ${T} litros de agua y gastamos ${a}/${b} para regar.`,q:'¿Cuántos litros gastamos?',u:'litros'},
+  {t:`${N()} tiene ${T} € y se gasta ${a}/${b} en un regalo.`,q:'¿Cuánto cuesta el regalo?',u:'€'}]);
+  return Object.assign(o,{p:`Para calcular ${a}/${b} de ${T}: primero dividimos entre ${b} (una parte) y luego multiplicamos por ${a} (las partes que nos piden).`,c:[[`${T} ÷ ${b}`,q],[`${q} × ${a}`,q*a]],a:q*a})},
+ ()=>{const b=pick([3,4,5,6,8]),a=R(1,b-1),q=R(2,6),T=q*b,eat=q*a;const o=pick([
+  {t:`Una tarta está cortada en ${T} trozos iguales. En la fiesta se comen ${a}/${b} de la tarta.`,q:'¿Cuántos trozos quedan?',u:'trozos'},
+  {t:`Un libro tiene ${T*5} páginas y ${N()} ha leído ${a}/${b}.`,q:'¿Cuántas páginas le quedan por leer?',u:'páginas',k:5}]);
+  const TT=T*(o.k||1),qq=q*(o.k||1),ee=eat*(o.k||1);
+  return Object.assign(o,{p:`Paso 1: calculamos ${a}/${b} de ${TT} (dividir entre ${b} y multiplicar por ${a}). Paso 2: restamos al total para saber lo que queda.`,c:[[`${TT} ÷ ${b}`,qq],[`${qq} × ${a}`,ee],[`${TT} − ${ee}`,TT-ee]],a:TT-ee})},
+ ()=>{const k=R(0,2),b=pick([5,6,7,8,9,10,12]);
+  if(k===0){const a=R(1,Math.floor(b/2)-1)||1,c=R(1,b-a-1);const s=a+c;const n=N();return {t:`${n} se come ${a}/${b} de una pizza y su hermano ${c}/${b} de la misma pizza.`,q:'¿Qué fracción de la pizza se han comido entre los dos?',p:`Las fracciones tienen el mismo denominador (${b}): sumamos los numeradores y dejamos el ${b}.`,c:[[`${a}/${b} + ${c}/${b}`,`${s}/${b}`]],a:`${s}/${b}`,ch:uniqChoices(`${s}/${b}`,[`${s}/${2*b}`,`${b-s}/${b}`,`${a*c}/${b}`,`${s+1}/${b}`])}}
+  if(k===1){const a=R(1,b-1);return {t:`Una botella de agua está llena. ${N()} se bebe ${a}/${b} de la botella.`,q:'¿Qué fracción de la botella queda?',p:`La botella entera son ${b}/${b}. Restamos lo que se bebe: ${b}/${b} − ${a}/${b}.`,c:[[`${b}/${b} − ${a}/${b}`,`${b-a}/${b}`]],a:`${b-a}/${b}`,ch:uniqChoices(`${b-a}/${b}`,[`${a}/${b}`,`${b-a+1}/${b}`,`1/${b}`,`${b-a}/${2*b}`,`${b-a-1}/${b}`])}}
+  const [n1,n2]=N2();let a=R(1,b-1),c;do{c=R(1,b-1)}while(c===a);return {t:`${n1} ha leído ${a}/${b} de un libro y ${n2} ha leído ${c}/${b} del mismo libro.`,q:'¿Quién ha leído más?',p:`Con el mismo denominador, es mayor la fracción que tiene el numerador más grande: ${Math.max(a,c)} > ${Math.min(a,c)}.`,c:[`${a}/${b} ${a>c?'>':'<'} ${c}/${b}`],a:a>c?n1:n2,ch:[n1,n2]}},
+ ()=>{const k=R(0,1);if(k===0){const M=4*R(5,20);return {t:`${N()} tiene ${M} €. Se gasta la mitad en un videojuego y la cuarta parte del total en un libro.`,q:'¿Cuánto dinero le queda?',u:'€',p:'Paso 1: la mitad (÷2). Paso 2: la cuarta parte (÷4). Paso 3: restamos las dos cosas al total.',c:[[`${M} ÷ 2`,M/2],[`${M} ÷ 4`,M/4],[`${M} − ${M/2} − ${M/4}`,M/4]],a:M/4}}
+  const T=12*R(2,6);return {t:`En un colegio hay ${T} alumnos en 6.º. Un tercio juega al fútbol, la cuarta parte hace natación y el resto va a teatro.`,q:'¿Cuántos alumnos van a teatro?',u:'alumnos',p:'Paso 1: un tercio (÷3). Paso 2: la cuarta parte (÷4). Paso 3: restamos los dos al total.',c:[[`${T} ÷ 3`,T/3],[`${T} ÷ 4`,T/4],[`${T} − ${T/3} − ${T/4}`,T-T/3-T/4]],a:T-T/3-T/4}},
+];
+
+// ---------- MUNDO 6: tiempo y medidas ----------
+function timeChoices(m){return uniqChoices(hm(m),shuffle([hm(m+10),hm(m-10),hm(m+60),hm(m-60),hm(m+5)]))}
+const CONV=[
+ ['metros','centímetros',100,x=>`Una cuerda mide ${x} metros.`,'¿Cuántos centímetros mide?','cm',[2,15]],
+ ['kilómetros','metros',1000,x=>`El camino al pueblo mide ${x} km.`,'¿Cuántos metros son?','m',[2,9]],
+ ['kilos','gramos',1000,x=>`Un saco de patatas pesa ${x} kg.`,'¿Cuántos gramos pesa?','g',[2,9]],
+ ['litros','mililitros',1000,x=>`Una garrafa tiene ${x} litros de agua.`,'¿Cuántos mililitros son?','ml',[2,8]],
+ ['horas','minutos',60,x=>`Una excursión dura ${x} horas.`,'¿Cuántos minutos dura?','min',[2,6]],
+ ['minutos','segundos',60,x=>`Un juego de la consola dura ${x} minutos.`,'¿Cuántos segundos son?','s',[2,10]],
+];
+const W6=[
+ ()=>{const s=R(9*12,19*12)*5,d=5*R(3,18);if(Math.random()<.5){const act=pick(['La clase de natación','El partido','La película de dibujos','El ensayo de teatro']);return {t:`${act} empieza a las ${hm(s)} y termina a las ${hm(s+d)}.`,q:'¿Cuántos minutos dura?',u:'min',p:`Contamos el tiempo desde las ${hm(s)} hasta las ${hm(s+d)}. Truco: primero hasta la hora en punto y luego lo que falta.`,c:[[`De ${hm(s)} a ${hm(s+d)}`,d]],a:d}}
+  const act=pick(['La película','El concierto','El viaje en tren','La clase de música']);return {t:`${act} empieza a las ${hm(s)} y dura ${d} minutos.`,q:'¿A qué hora termina?',p:`Sumamos ${d} minutos a las ${hm(s)}. Recuerda: 60 minutos son 1 hora.`,c:[[`${hm(s)} + ${d} min`,hm(s+d)]],a:hm(s+d),ch:timeChoices(s+d)}},
+ ()=>{if(Math.random()<.25){const x=R(2,9);return {t:`Una tabla de madera mide ${x*100} cm.`,q:'¿Cuántos metros mide?',u:'m',p:'1 metro son 100 cm. Para pasar de cm a metros dividimos entre 100.',c:[[`${x*100} ÷ 100`,x]],a:x}}
+  const [from,to,f,t,q,u,rg]=pick(CONV),x=R(rg[0],rg[1]);return {t:t(x),q,u,p:`1 ${from.replace(/s$/,'')} = ${f} ${to}. Para pasar de ${from} a ${to} multiplicamos por ${f}.`,c:[[`${x} × ${f}`,x*f]],a:x*f}},
+ ()=>{const k=R(0,2);
+  if(k===0){const L=pick([1,1.5,2,3]),v=L*1000/250;return {t:`Una botella tiene ${fmt(L)} ${L===1?'litro':'litros'} de zumo y llenamos vasos de 250 ml.`,q:'¿Cuántos vasos llenamos?',u:'vasos',p:'Paso 1: pasamos los litros a mililitros (×1000). Paso 2: dividimos entre 250 ml de cada vaso.',c:[[`${fmt(L)} × 1000`,L*1000],[`${L*1000} ÷ 250`,v]],a:v}}
+  if(k===1){const m=pick([500,750,1000,1500]),d=R(2,6);return {t:`${N()} corre ${m} metros cada día.`,q:`¿Cuántos kilómetros corre en ${d} días?`,u:'km',p:'Paso 1: multiplicamos los metros por los días. Paso 2: pasamos a km dividiendo entre 1000.',c:[[`${m} × ${d}`,m*d],[`${m*d} ÷ 1000`,m*d/1000]],a:m*d/1000}}
+  const g=pick([250,500]),kk=2*R(1,6);return {t:`Un paquete de arroz pesa ${g} g.`,q:`¿Cuántos kilos pesan ${kk} paquetes?`,u:'kg',p:'Paso 1: multiplicamos los gramos por los paquetes. Paso 2: pasamos a kilos dividiendo entre 1000.',c:[[`${g} × ${kk}`,g*kk],[`${g*kk} ÷ 1000`,g*kk/1000]],a:g*kk/1000}},
+ ()=>{if(Math.random()<.5){const h=R(1,2),m=5*R(1,11);const nm=pick(['Una película','Un partido con prórroga','Una obra de teatro']);return {t:`${nm} dura ${h} h y ${m} min.`,q:'¿Cuántos minutos dura en total?',u:'min',p:`Cada hora son 60 minutos: multiplicamos las horas por 60 y sumamos los minutos.`,c:[[`${h} × 60`,h*60],[`${h*60} + ${m}`,h*60+m]],a:h*60+m}}
+  const s=R(8*12,18*12)*5,H=R(1,3),mm=5*R(1,11),e=s+H*60+mm;return {t:`Un tren sale a las ${hm(s)} y el viaje dura ${H} h y ${mm} min.`,q:'¿A qué hora llega?',p:`Primero sumamos las horas (${H} h) y luego los minutos (${mm} min). Si pasamos de 60 minutos, sumamos 1 hora más.`,c:[[`${hm(s)} + ${H} h`,hm(s+H*60)],[`${hm(s+H*60)} + ${mm} min`,hm(e)]],a:hm(e),ch:timeChoices(e)}},
+ ()=>pick([W6[0],W6[1],W6[2],W6[3]])(),
+];
+
+// ---------- MUNDO 7: porcentajes y proporcionalidad ----------
+const PC={10:['10',10,'El 10 % es dividir entre 10.'],20:['20',5,'El 20 % es la quinta parte: dividimos entre 5.'],25:['25',4,'El 25 % es la cuarta parte: dividimos entre 4.'],50:['50',2,'El 50 % es la mitad: dividimos entre 2.']};
+const W7=[
+ ()=>{const T=20*R(1,10),p=pick([10,20,25,50]);const o=pick([
+  {t:`En una tienda hay ${T} camisetas y el ${p} % son azules.`,q:'¿Cuántas camisetas son azules?',u:'camisetas'},
+  {t:`En el colegio hay ${T} alumnos y el ${p} % viene en bici.`,q:'¿Cuántos alumnos vienen en bici?',u:'alumnos'},
+  {t:`Un huerto tiene ${T} plantas y el ${p} % son tomateras.`,q:'¿Cuántas tomateras hay?',u:'plantas'}]);
+  return Object.assign(o,{op:'÷',p:PC[p][2],c:[[`${T} ÷ ${PC[p][1]}`,T/PC[p][1]]],a:T/PC[p][1]})},
+ ()=>{const P=20*R(2,10),p=pick([10,20,25,50]),d=P/PC[p][1];const it=pick(['Unas zapatillas','Una bici','Un patinete','Unos cascos']);return {t:`${it} cuestan ${P} € y tienen un ${p} % de descuento.`,q:'¿Cuánto cuestan con el descuento?',u:'€',p:`Paso 1: calculamos el descuento. ${PC[p][2]} Paso 2: lo restamos al precio.`,c:[[`${P} ÷ ${PC[p][1]}`,d],[`${P} − ${d}`,P-d]],a:P-d}},
+ ()=>{const a=R(2,5),u=R(2,6);let b;do{b=R(3,12)}while(b===a);const it=pick([['cuadernos','€'],['entradas','€'],['bolígrafos','€']]);return {t:`${a} ${it[0]} cuestan ${a*u} €.`,q:`¿Cuánto cuestan ${b} ${it[0]}?`,u:'€',p:`Paso 1: averiguamos lo que cuesta 1 (dividimos entre ${a}). Paso 2: multiplicamos por ${b}.`,c:[[`${a*u} ÷ ${a}`,u],[`${u} × ${b}`,u*b]],a:u*b}},
+ ()=>{if(Math.random()<.5){const p=R(2,6),q=5*R(5,12);let r;do{r=R(2,10)}while(r===p);return {t:`Para hacer un bizcocho para ${p} personas se necesitan ${p*q} g de azúcar.`,q:`¿Cuántos gramos de azúcar hacen falta para ${r} personas?`,u:'g',p:`Paso 1: azúcar para 1 persona (dividimos entre ${p}). Paso 2: multiplicamos por ${r}.`,c:[[`${p*q} ÷ ${p}`,q],[`${q} × ${r}`,q*r]],a:q*r}}
+  const a=R(2,5),u=R(3,12);let b;do{b=R(3,15)}while(b===a);return {t:`Un grifo echa ${a*u} litros de agua en ${a} minutos, siempre al mismo ritmo.`,q:`¿Cuántos litros echa en ${b} minutos?`,u:'litros',p:`Paso 1: litros en 1 minuto (÷${a}). Paso 2: multiplicamos por ${b}.`,c:[[`${a*u} ÷ ${a}`,u],[`${u} × ${b}`,u*b]],a:u*b}},
+ ()=>{if(Math.random()<.4){const s=pick([2,5,10,25,50]),c=R(2,12);return {t:`En un mapa, cada centímetro equivale a ${s} km de verdad. Dos ciudades están a ${c} cm en el mapa.`,q:'¿Cuántos kilómetros hay entre ellas de verdad?',u:'km',op:'×',p:`Cada cm son ${s} km y hay ${c} cm: multiplicamos.`,c:[[`${c} × ${s}`,c*s]],a:c*s}}return pick([W7[0],W7[1],W7[2],W7[3]])()},
+];
+
+// ---------- MUNDO 8: geometría ----------
+const W8=[
+ ()=>{if(Math.random()<.6){const l=R(5,20),w=R(3,l-1);return {t:`Queremos poner una valla alrededor de un huerto rectangular de ${l} m de largo y ${w} m de ancho.`,q:'¿Cuántos metros de valla necesitamos?',u:'m',fig:figRect(l,w,'m'),p:'Rodear = perímetro: sumamos los 4 lados (2 largos y 2 anchos).',c:[[`${l} + ${w} + ${l} + ${w}`,2*(l+w)]],a:2*(l+w)}}
+  const s=R(12,60);return {t:`Un cuadro cuadrado mide ${s} cm de lado y le queremos poner un marco alrededor.`,q:'¿Cuántos centímetros de marco necesitamos?',u:'cm',fig:figRect(s,s,'cm','#ffe1a8'),p:'Un cuadrado tiene 4 lados iguales: multiplicamos el lado por 4.',c:[[`${s} × 4`,4*s]],a:4*s}},
+ ()=>{if(Math.random()<.6){const l=R(3,12),w=R(2,l);return {t:`Una alfombra rectangular mide ${l} m de largo y ${w} m de ancho.`,q:'¿Cuál es su área (cuántos metros cuadrados ocupa)?',u:'m²',fig:figRect(l,w,'m','#d8ccff'),p:'Área del rectángulo = largo × ancho.',c:[[`${l} × ${w}`,l*w]],a:l*w}}
+  const s=R(3,12);return {t:`Un patio cuadrado mide ${s} m de lado.`,q:'¿Cuántos metros cuadrados tiene?',u:'m²',fig:figRect(s,s,'m'),p:'Área del cuadrado = lado × lado.',c:[[`${s} × ${s}`,s*s]],a:s*s}},
+ ()=>{if(Math.random()<.5){const l=R(3,8),w=R(2,6),p=R(8,25);return {t:`Queremos poner suelo nuevo en una habitación de ${l} m por ${w} m. Cada metro cuadrado cuesta ${p} €.`,q:'¿Cuánto cuesta el suelo?',u:'€',fig:figRect(l,w,'m','#ffd6a5'),p:'Paso 1: área (largo × ancho). Paso 2: multiplicamos los m² por el precio de cada uno.',c:[[`${l} × ${w}`,l*w],[`${l*w} × ${p}`,l*w*p]],a:l*w*p}}
+  const l=R(6,15),w=R(3,8),p=R(2,6);return {t:`Un campo de ${l} m de largo y ${w} m de ancho se rodea con una valla que cuesta ${p} € cada metro.`,q:'¿Cuánto cuesta la valla?',u:'€',fig:figRect(l,w,'m'),p:'Paso 1: perímetro (suma de los 4 lados). Paso 2: multiplicamos por el precio de cada metro.',c:[[`${l} + ${w} + ${l} + ${w}`,2*(l+w)],[`${2*(l+w)} × ${p}`,2*(l+w)*p]],a:2*(l+w)*p}},
+ ()=>{if(Math.random()<.5){const b=2*R(2,8),h=R(3,10);return {t:`La vela de un barco es un triángulo de ${b} m de base y ${h} m de altura.`,q:'¿Cuál es su área?',u:'m²',fig:figTri(b,h,'m'),p:'Área del triángulo = base × altura ÷ 2 (es la mitad de un rectángulo).',c:[[`${b} × ${h}`,b*h],[`${b*h} ÷ 2`,b*h/2]],a:b*h/2}}
+  const a=R(3,7),b=R(4,8),c=R(2,6),d=R(2,b-1);return {t:`Un jardín tiene forma de L: está formado por un rectángulo de ${a} m × ${b} m y otro de ${c} m × ${d} m.`,q:'¿Cuál es el área total del jardín?',u:'m²',fig:figL(a,b,c,d),p:'Calculamos el área de cada rectángulo y las sumamos.',c:[[`${a} × ${b}`,a*b],[`${c} × ${d}`,c*d],[`${a*b} + ${c*d}`,a*b+c*d]],a:a*b+c*d}},
+ ()=>pick([W8[0],W8[1],W8[2],W8[3]])(),
+];
+
+const WORLDS=[
+ {name:'Isla de las Sumas',emo:'🏝️',g:['#36c5f0','#1777c4'],desc:'Sumar y restar con cabeza',lv:['Sumas fáciles','Restas fáciles','¿Sumo o resto?','Números grandes','Palabras trampa'],gen:W1,opPhase:true},
+ {name:'Bosque de las Tablas',emo:'🌳',g:['#55c76a','#1f8a4c'],desc:'Multiplicar y repartir',lv:['Multiplicar','Repartir','¿× o ÷?','Números grandes','¿Y lo que sobra?'],gen:W2,opPhase:true},
+ {name:'Montaña de los 2 Pasos',emo:'⛰️',g:['#9b7bff','#5a3fd0'],desc:'Problemas con dos operaciones',lv:['Suma y resta','Multiplica y suma','Compra y cambio','Divide y suma','Tres datos'],gen:W3},
+ {name:'Mercado del Dinero',emo:'🛒',g:['#ffb347','#e8742a'],desc:'Euros, céntimos y compras',lv:['Sumar precios','El cambio','Varias cosas','Pagar a medias','Compras difíciles'],gen:W4,opPhase:true},
+ {name:'Castillo de las Fracciones',emo:'🏰',g:['#ff7eb3','#c2387a'],desc:'Mitades, tercios y cuartos',lv:['La mitad y más','Fracción de un número','¿Cuánto queda?','Sumar fracciones','Reto de fracciones'],gen:W5},
+ {name:'Torre del Reloj',emo:'⏰',g:['#4dd0c4','#16857c'],desc:'Horas, metros, kilos y litros',lv:['¿Cuánto dura?','Cambiar unidades','Vasos y kilómetros','Horas y minutos','Reto de medidas'],gen:W6},
+ {name:'Laboratorio del %',emo:'🧪',g:['#7aa7ff','#3c55d6'],desc:'Porcentajes y reglas de tres',lv:['Porcentajes','Descuentos','Si 1 cuesta...','Recetas y grifos','Mapas y mezcla'],gen:W7},
+ {name:'Ciudad de las Formas',emo:'🏙️',g:['#ff8a65','#c43e3e'],desc:'Perímetros y áreas',lv:['Perímetro','Área','¿Cuánto cuesta?','Triángulos y L','Gran reto final'],gen:W8},
+];
+function genLevel(w,l,n=5){const out=[],seen=new Set();let tries=0;while(out.length<n&&tries<60){tries++;const p=WORLDS[w-1].gen[l-1]();const key=p.t+p.q;if(seen.has(key))continue;seen.add(key);p.w=w;p.l=l;out.push(p)}return out}
+/*GEN-END*/
+</script>
+
+<script>
+// ================= ESTADO =================
+const KEY='mateaventura_v1';
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const FREE_AV=['🦉','🦊','🐱','🐶','🐼','🐰'];
+const DEF=()=>({name:'',avatar:'🦉',acc:'',theme:'morado',coins:0,earned:0,stars:{},stats:{done:0,ok:0,first:0,hints:0,opErr:0,lv:{}},days:[],streak:0,maxStreak:0,lastDay:'',ach:{},owned:[...FREE_AV,'morado'],pin:'',reto:'',retos:0,comeback:0,noHint:0,sound:true,voice:false,unlock:1,shopped:0});
+let ST;try{ST=Object.assign(DEF(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){ST=DEF()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(ST))}catch(e){}};
+PLAYER=ST.name;
+let SCREEN=ST.name?'map':'welcome', G=null, SHOPTAB='av', PARENT_OK=false;
+const $=s=>document.querySelector(s);
+
+// ================= TIENDA / LOGROS =================
+const SHOP={
+ av:[['🦉',0],['🦊',0],['🐱',0],['🐶',0],['🐼',0],['🐰',0],['🐧',100],['🐯',120],['🐨',140],['🐙',180],['🦄',200],['🤖',220],['👽',250],['🦖',280],['🐉',350],['🦋',160]],
+ acc:[['',0,'Nada'],['🎀',60],['🌸',60],['🧢',90],['🕶️',110],['🎩',130],['⭐',150],['🎧',170],['👑',300],['🌈',250]],
+ th:[['morado',0,'Morado','#7b5cff,#4f3bd1'],['oceano',150,'Océano','#22b8f0,#0a6fc2'],['bosque',150,'Bosque','#3fbf6a,#1d7a45'],['chuches',200,'Chuches','#ff6fb5,#a24bff'],['atardecer',200,'Atardecer','#ff8a4c,#e2366b'],['noche',300,'Noche','#6f7cff,#28307a']]
+};
+const totalStars=()=>Object.values(ST.stars).reduce((a,b)=>a+b,0);
+const ACH=[
+ ['primer','🌱','Primer paso','Acierta tu primer problema',s=>s.stats.ok>=1],
+ ['nivel','🚩','¡En marcha!','Completa tu primer nivel',s=>Object.keys(s.stars).length>=1],
+ ['tres','⭐','¡Perfecto!','3 estrellas en un nivel',s=>Object.values(s.stars).some(v=>v>=3)],
+ ['cinco3','🌟','Estrella brillante','3 estrellas en 5 niveles',s=>Object.values(s.stars).filter(v=>v>=3).length>=5],
+ ['est30','✨','Cielo estrellado','Consigue 30 estrellas',s=>totalStars()>=30],
+ ['sinpista','🧠','Cerebrito','Completa un nivel sin pistas',s=>s.noHint>=1],
+ ['pistas','💡','Detective','Usa 10 pistas (¡pedir ayuda es de listas!)',s=>s.stats.hints>=10],
+ ['nunca','💪','Nunca me rindo','Acierta 10 veces tras fallar',s=>s.comeback>=10],
+ ['p25','🎯','25 aciertos','Acierta 25 problemas',s=>s.stats.ok>=25],
+ ['p100','🏅','100 aciertos','Acierta 100 problemas',s=>s.stats.ok>=100],
+ ['p250','🏆','250 aciertos','Acierta 250 problemas',s=>s.stats.ok>=250],
+ ['r3','🔥','Racha de 3','Practica 3 días seguidos',s=>s.maxStreak>=3],
+ ['r7','☄️','Racha de 7','Practica 7 días seguidos',s=>s.maxStreak>=7],
+ ['reto1','🎁','Retadora','Completa un reto del día',s=>s.retos>=1],
+ ['reto10','🗓️','Constancia','Completa 10 retos del día',s=>s.retos>=10],
+ ['compra','🛍️','De compras','Compra algo en la tienda',s=>s.shopped>=1],
+ ['rica','💰','Hucha llena','Gana 1000 monedas en total',s=>s.earned>=1000],
+ ...WORLDS.map((w,i)=>['m'+(i+1),w.emo,w.name,'Termina el mundo '+(i+1),s=>(s.stars[(i+1)+'-5']||0)>=1]),
+ ['todo','👑','Campeona de Mates','Termina los 8 mundos',s=>(s.stars['8-5']||0)>=1],
+];
+function checkAch(){const nuevos=[];for(const a of ACH){if(!ST.ach[a[0]]&&a[4](ST)){ST.ach[a[0]]=today();nuevos.push(a)}}if(nuevos.length)save();return nuevos}
+
+// ================= SONIDO, VOZ, EFECTOS =================
+let AC;
+function tone(f,d,t,type='sine',v=.12){const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime+t);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+t+d);o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+t);o.stop(AC.currentTime+t+d+.05)}
+function sfx(k){if(!ST.sound)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();
+ if(k==='ok')[523,659,784].forEach((f,i)=>tone(f,.18,i*.09,'triangle'));
+ else if(k==='ko')[300,220].forEach((f,i)=>tone(f,.22,i*.14,'sine',.1));
+ else if(k==='win')[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.22,i*.12,'triangle'));
+ else if(k==='coin')[988,1319].forEach((f,i)=>tone(f,.12,i*.07,'square',.05));
+ else if(k==='tap')tone(660,.05,0,'sine',.05);
+ else if(k==='ach')[784,988,1175,1568].forEach((f,i)=>tone(f,.25,i*.1,'triangle'));}catch(e){}}
+function speak(txt){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt.replace(/<[^>]+>/g,'').replace(/÷/g,' entre ').replace(/×/g,' por ').replace(/−/g,' menos '));u.lang='es-ES';u.rate=.92;const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('es'));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
+const cv=$('#fx'),cx=cv.getContext('2d');let parts=[];
+function confetti(n=140){cv.width=innerWidth;cv.height=innerHeight;const cols=['#ff5e7e','#ffd166','#06d6a0','#4cc9f0','#9b5de5','#ff9f1c'];for(let i=0;i<n;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*120,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*7+4,c:pick(cols),a:Math.random()*6,va:(Math.random()-.5)*.3,life:120+Math.random()*60});if(parts.length===n)requestAnimationFrame(fxLoop)}
+function fxLoop(){cx.clearRect(0,0,cv.width,cv.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.vx*=.99;p.a+=p.va;p.life--;cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;if(p.heart){p.vy+=-.33;cx.font='22px serif';cx.fillText('❤',0,0)}else cx.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);cx.restore()});parts=parts.filter(p=>p.life>0&&p.y<cv.height+20);if(parts.length)requestAnimationFrame(fxLoop);else cx.clearRect(0,0,cv.width,cv.height)}
+function coinFly(n,el){const r=(el||document.body).getBoundingClientRect();const d=document.createElement('div');d.className='coinfly';d.textContent='+'+n+' 🪙';d.style.left=(r.left+r.width/2-40)+'px';d.style.top=(Math.max(r.top,80))+'px';document.body.appendChild(d);setTimeout(()=>d.remove(),1000);sfx('coin')}
+function addCoins(n){ST.coins+=n;ST.earned+=n}
+
+// ================= VISTAS =================
+const avatar=(sz,e=ST.avatar,a=ST.acc)=>`<span class="av ${sz}"><span class="e">${e}</span>${a?`<span class="acc">${a}</span>`:''}</span>`;
+function renderTop(){if(SCREEN==='welcome'){$('#top').innerHTML='';return}
+ $('#top').innerHTML=`<div class="top"><div class="in"><div class="who">${avatar('s')}<b>${ST.name}</b></div>
+ <span class="pill" title="Racha de días">🔥 ${ST.streak}</span><span class="pill" title="Estrellas">⭐ ${totalStars()}</span><span class="pill" title="Monedas">🪙 ${ST.coins}</span>
+ <button class="icbtn" onclick="toggleSound()" aria-label="Sonido">${ST.sound?'🔊':'🔇'}</button></div></div>`}
+function renderNav(){if(SCREEN==='welcome'||SCREEN==='play'||SCREEN==='end'||SCREEN==='learn'){$('#nav').innerHTML='';return}
+ const b=(s,i,t)=>`<button class="${SCREEN===s?'on':''}" onclick="go('${s}')"><span>${i}</span>${t}</button>`;
+ $('#nav').innerHTML=`<div class="nav"><div class="in">${b('map','🗺️','Mapa')}${b('learnlist','📖','Aprender')}${b('ach','🏆','Logros')}${b('shop','🛍️','Tienda')}${b('parents','👪','Familia')}</div></div>`}
+function go(s){sfx('tap');SCREEN=s;render();scrollTo(0,0)}
+function toggleSound(){ST.sound=!ST.sound;save();renderTop()}
+function render(){document.body.dataset.theme=ST.theme;renderTop();renderNav();({welcome:vWelcome,map:vMap,play:vPlay,end:vEnd,ach:vAch,shop:vShop,parents:vParents,learn:vLearn,learnlist:vLearnList})[SCREEN]()}
+
+// ================= FRASE DEL DÍA DE PAPÁ Y MAMÁ =================
+const FRASES_DEF=['Estamos muy orgullosos de ti, no por lo que aciertas, sino por lo mucho que lo intentas.','Equivocarse es la forma que tiene tu cerebro de aprender. ¡Adelante!','Poco a poco se llega muy lejos. Hoy, un pasito más.','Eres más lista de lo que crees y más fuerte de lo que piensas.','Lo que hoy te cuesta, mañana te parecerá fácil.','No tienes que ser perfecta, solo seguir intentándolo.','Cada problema que resuelves es un superpoder nuevo.','Confiamos muchísimo en ti. ¡Tú puedes!','Si te atascas, respira, léelo otra vez y pide ayuda. Eso también es ser valiente.','Nos encanta verte esforzarte. ¡Eres increíble!','Las mates son como un puzle: cada pieza que encajas cuenta.','Hoy es un día genial para aprender algo nuevo.','No importa lo rápido que vayas, sino que no te pares.','Te queremos muchísimo, aciertes o falles.','Cuando pienses «no sé», añade «todavía».','Tu cabeza es como un músculo: cuanto más la entrenas, más fuerte se pone.','Estamos a tu lado en cada problema.','¡Hoy te vas a sorprender a ti misma!','Los errores son pistas, no fracasos.','Con paciencia y ganas puedes con todo.','Eres nuestra campeona, hoy y siempre.','Si ayer te costó, hoy te costará un poquito menos.','Intentarlo ya es ganar.','Lee despacio, piensa con calma y confía en ti.','Las cosas que merecen la pena casi nunca salen a la primera.','Cada estrella que consigues es fruto de tu esfuerzo.','Nos haces muy felices cuando te vemos aprender.','Brilla a tu manera ✨'];
+function fraseHoy(){ST.frases=ST.frases&&ST.frases.length?ST.frases:FRASES_DEF.slice();if(ST.fraseDay!==today()){if(ST.especial){ST.fraseTxt=ST.especial;ST.especial=''}else{ST.fraseIdx=((ST.fraseIdx??-1)+1)%ST.frases.length;ST.fraseTxt=ST.frases[ST.fraseIdx]}ST.fraseDay=today();save();return true}return false}
+function showFrase(){const t=ST.fraseTxt||'';sfx('ach');hearts();if(ST.voice)speak(t+'. '+(ST.firma||'Papá y Mamá'));
+ modal(`<div style="font-weight:800;color:var(--mut);letter-spacing:1px">💌 MENSAJE DE HOY</div><div class="bigemo">💌</div>
+ <div class="letter"><div>Para ${ST.name}:</div><p>«${t}»</p><div class="sign">Con todo nuestro cariño,<br><b>${ST.firma||'Papá y Mamá'}</b> ❤️</div></div>
+ <div class="row" style="justify-content:center;margin-top:12px"><button class="btn sec" onclick="speak(ST.fraseTxt+'. '+(ST.firma||'Papá y Mamá'))">🔊</button><button class="btn" onclick="closeModal()">¡Gracias! A por ello 💪</button></div>`)}
+function hearts(){cv.width=innerWidth;cv.height=innerHeight;const start=!parts.length;for(let i=0;i<18;i++)parts.push({x:(Math.random()<.5?Math.random()*.18:.82+Math.random()*.18)*innerWidth,y:innerHeight+20,vx:(Math.random()-.5)*2,vy:-Math.random()*6-5,r:14,c:pick(['#ff5e7e','#ff8fab','#e5484d','#ffb3c6']),a:0,va:0,life:160,heart:1});if(start)requestAnimationFrame(fxLoop)}
+
+// ---- bienvenida ----
+let wAv='🦉';
+function vWelcome(){$('#app').innerHTML=`<div class="card center" style="margin-top:30px">
+ <div class="bigemo">🧮</div><h1 style="font-size:34px">¡Bienvenida a MateAventura!</h1>
+ <p class="mut" style="font-weight:700">Vas a viajar por 8 mundos resolviendo problemas. Cada acierto te da monedas ⭐ y logros 🏆.</p>
+ <p style="font-weight:800;margin-bottom:6px">¿Cómo te llamas?</p><input class="txt" id="nm" maxlength="16" placeholder="Tu nombre" autocomplete="off">
+ <p style="font-weight:800;margin:16px 0 0">Elige tu compañero de aventura</p>
+ <div class="pick">${FREE_AV.map(e=>`<button class="${e===wAv?'on':''}" onclick="wAv='${e}';vWelcomeKeep()">${e}</button>`).join('')}</div>
+ <button class="btn" style="width:100%" onclick="startGame()">¡Empezar! 🚀</button></div>`}
+function vWelcomeKeep(){const v=$('#nm').value;vWelcome();$('#nm').value=v;sfx('tap')}
+function startGame(){const n=$('#nm').value.trim();if(!n){$('#nm').focus();$('#nm').style.borderColor='var(--bad)';return}
+ ST.name=n;PLAYER=n;ST.avatar=wAv;save();SCREEN='map';render();confetti(80);sfx('win')}
+
+// ---- mapa ----
+const lvKey=(w,l)=>w+'-'+l;
+const passed=k=>(ST.stars[k]||0)>=1||!!(ST.cleared&&ST.cleared[k]);
+function isOpen(w,l){if(w<=ST.unlock&&l===1)return true;if(w===1&&l===1)return true;if(w<ST.unlock)return true;const pw=l===1?w-1:w,pl=l===1?5:l-1;return passed(lvKey(pw,pl))}
+function curLevel(){for(let w=1;w<=8;w++)for(let l=1;l<=5;l++)if(isOpen(w,l)&&!ST.stars[lvKey(w,l)])return [w,l];return [8,5]}
+const SALUDOS=['¿Lista para pensar? 🧠','¡Hoy vamos a por más estrellas!','Recuerda: lee el problema dos veces 👀','Si te atascas, pide una pista 💡','¡Cada día un poquito mejor!'];
+function vMap(){const [cw,cl]=curLevel();const retoHecho=ST.reto===today();
+ let h=`<div class="hello">${avatar('m')}<div class="bubble">¡Hola, ${ST.name}! ${pick(SALUDOS)}</div></div>
+ <button class="daily" onclick="startReto()"><span style="font-size:44px">${retoHecho?'✅':'🎁'}</span><span><span class="big">Reto del día</span><br><span style="font-weight:700">${retoHecho?'¡Hecho! Vuelve mañana para otro cofre':'5 problemas mezclados · cofre de +40 🪙'}</span></span></button>`;
+ const nueva=fraseHoy();h+=`<button class="msgday" onclick="showFrase()"><span style="font-size:34px">💌</span><span><b>Mensaje de ${ST.firma||'Papá y Mamá'}</b><br><span class="small">«${ST.fraseTxt.length>60?ST.fraseTxt.slice(0,58)+'…':ST.fraseTxt}»</span></span></button>`;
+ WORLDS.forEach((W,i)=>{const w=i+1,open=isOpen(w,1);const st=[1,2,3,4,5].reduce((a,l)=>a+(ST.stars[lvKey(w,l)]||0),0);
+  h+=`<div class="world ${open?'':'locked'}" id="w${w}" style="background:linear-gradient(135deg,${W.g[0]},${W.g[1]})"><div class="wemo">${W.emo}</div>
+  <div class="small" style="font-weight:800;opacity:.85">MUNDO ${w} · ⭐ ${st}/15</div><h2>${W.name}</h2><div class="wdesc">${W.desc}</div>${open?`<button class="wlearn" onclick="openLesson(${w})">📖 ¿Cuándo se hace cada cosa?</button>`:''}<div class="path">`;
+  for(let l=1;l<=5;l++){const o=isOpen(w,l),s=ST.stars[lvKey(w,l)]||0,cur=w===cw&&l===cl;
+   h+=`<button class="node ${l===5?'boss':''} ${o?'':'lock'} ${cur?'cur':''}" ${o?`onclick="nodeTap(${w},${l})"`:''} title="${W.lv[l-1]}">${o?(l===5?'👑':l):'🔒'}${o?`<span class="st">${'⭐'.repeat(s)}${'<span style="opacity:.35">☆</span>'.repeat(3-s)}</span>`:''}</button>`}
+  h+=`</div></div>`});
+ $('#app').innerHTML=h;if(nueva)setTimeout(showFrase,450);
+ const el=$('#w'+cw);if(el&&cw>1)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150)}
+
+// ---- juego ----
+function startLevel(w,l){ST.seen=ST.seen||{};if(l===1&&!ST.seen[w]){openLesson(w,()=>startLevel(w,l));return}sfx('tap');G={mode:'lvl',w,l,probs:genLevel(w,l),i:0,res:[],hintsUsed:0};newProb();SCREEN='play';render();scrollTo(0,0)}
+function startReto(){if(ST.reto===today()){toast('🎁','¡Ya hiciste el reto de hoy!','Vuelve mañana para un cofre nuevo. Mientras, puedes seguir en el mapa.');return}
+ const open=[];for(let w=1;w<=8;w++)for(let l=1;l<=5;l++)if(isOpen(w,l))open.push([w,l]);const done=open.filter(([w,l])=>ST.stars[lvKey(w,l)]);const pool=done.length?done:open;
+ const probs=[];for(let i=0;i<5;i++){const [w,l]=pick(pool);probs.push(genLevel(w,l,1)[0])}
+ G={mode:'reto',probs,i:0,res:[],hintsUsed:0};newProb();SCREEN='play';render();scrollTo(0,0)}
+function newProb(){const p=G.probs[G.i];G.phase=(p.op&&WORLDS[p.w-1].opPhase)?'op':'ans';G.tries=0;G.hint=0;G.input='';G.done=false;G.msg=null;G.opWrong=[];G.state='';G.picked=null;if(ST.voice)setTimeout(()=>speak(p.t+' '+p.q),300)}
+const hlNums=t=>t.replace(/\d+(?:[:,.\/]\d+)?/g,m=>`<mark>${m}</mark>`);
+const OPNAME={'+':'sumar','−':'restar','×':'multiplicar','÷':'dividir'};
+const OKM=['¡Genial! 🎉','¡Lo has clavado! 🎯','¡Eres una crack! ⭐','¡Muy bien pensado! 🧠','¡Así se hace! 💪','¡Bravo! 👏','¡Toma ya! 🚀'];
+const OK2=['¡Lo conseguiste! Eso es no rendirse 💪','¡Bien! A la segunda también vale 😄','¡Eso es! Revisar funciona 🔍'];
+const KO1=['Casi... vuelve a mirar los números 👀','¡Uy! Si no sabes por qué, pulsa 🆘 «Me he atascado»','¡Ups! Inténtalo otra vez. Puedes pedir una pista 💡','Equivocarse también es aprender. ¡Otra vez!','Revisa la cuenta con calma, tú puedes 🙂'];
+function vPlay(){const p=G.probs[G.i],W=WORLDS[p.w-1];
+ const title=G.mode==='reto'?'🎁 Reto del día':`${W.emo} Mundo ${G.w} · ${W.lv[G.l-1]}`;
+ const dots=G.probs.map((_,k)=>`<div class="dot ${k<G.res.length?(G.res[k]?'ok':'ko'):(k===G.i?'now':'')}"></div>`).join('');
+ const step=G.done?4:(G.phase==='op'?3:(G.hint>=2?3:(G.hint>=1?2:1)));
+ let h=`<div class="ptop"><button class="icbtn" style="background:var(--soft)" onclick="quitLevel()" aria-label="Salir">✖️</button><div class="dots">${dots}</div></div>
+ <div class="lvtitle">${title}${G.mode==='reto'?` · <span class="tag">${W.emo} ${W.lv[p.l-1]}</span>`:''}</div>
+ <div class="card"><button class="say" onclick="speak(G.probs[G.i].t+' '+G.probs[G.i].q)" aria-label="Leer en voz alta">🔊</button>
+ <div class="prob ${G.hint>=2||G.done?'showdata':''}">${hlNums(p.t)}<span class="q ${G.hint>=1?'hl':''}">${p.q}</span></div>${p.fig?`<div class="fig">${p.fig}</div>`:''}
+ <div class="steps4">${[['👀','Leo'],['🔎','Datos'],['🤔','Operación'],['✏️','Calculo']].map((s,k)=>`<div class="${k<step?'on':''}"><span>${s[0]}</span>${s[1]}</div>`).join('')}</div></div>`;
+ // zona respuesta
+ if(G.phase==='op'&&!G.done){h+=`<div class="card"><div class="big center" style="font-size:22px;margin-bottom:12px">¿Qué operación hay que hacer?</div><div class="ops">
+  ${['+','−','×','÷'].map(o=>`<button class="op ${G.opWrong.includes(o)?'no':''}" onclick="pickOp('${o}')">${o}<small>${OPNAME[o]}</small></button>`).join('')}</div></div>`}
+ else if(p.ch){h+=`<div class="card"><div class="choices">${p.ch.map(c=>`<button class="choice ${G.picked===c?G.state:''} ${G.done&&c===p.a?'yes':''}" ${G.done?'disabled':''} onclick="pickChoice(this.dataset.v)" data-v="${c}">${c}</button>`).join('')}</div></div>`}
+ else{h+=`<div class="card">${G.opOk?`<div class="center mut small" style="font-weight:800;margin-bottom:6px">Has elegido <span class="tag">${p.op} ${OPNAME[p.op]}</span> ✅ Ahora calcula:</div>`:''}
+  <div class="ansbox"><div class="disp ${G.state}" id="disp">${G.input||'<span style="opacity:.25">?</span>'}</div>${p.u?`<span class="unit">${p.u}</span>`:''}</div>
+  ${G.done?'':`<div class="kp">${[7,8,9,4,5,6,1,2,3].map(n=>`<button onclick="key('${n}')">${n}</button>`).join('')}<button onclick="key(',')">,</button><button onclick="key('0')">0</button><button onclick="key('del')">⌫</button></div>`}</div>`}
+ // mensaje mascota
+ if(G.msg)h+=`<div class="mascot"><span class="${G.msg.anim?'bounce':''}">${avatar('m')}</span><div class="bubble">${G.msg.t}</div></div>`;
+ // pistas
+ h+=`<div class="hints">${hintsHTML(p)}</div>`;
+ if(G.done)h+=solHTML(p);
+ // botones
+ if(G.done&&!G.res[G.i])h+=`<div class="acts"><button class="btn sec" onclick="redoProb(false)">🔁 Repetir este</button><button class="btn sec" onclick="redoProb(true)">🎲 Otro parecido</button></div>`;
+ if(G.done)h+=`<div class="acts"><button class="btn" onclick="nextProb()">${G.i<G.probs.length-1?'Siguiente ➜':'¡Ver resultado! 🏁'}</button></div>`;
+ else h+=`<button class="stuckbtn" onclick="stuck()">🆘 Me he atascado, ¡ayuda!</button><div class="acts"><button class="btn sec" onclick="useHint()" ${G.hint>=4?'disabled':''}>💡 Pista ${G.hint<4?`(${G.hint}/4)`:''}</button>${G.phase==='ans'&&!p.ch?`<button class="btn" onclick="check()">Comprobar ✔</button>`:''}</div>`;
+ $('#app').innerHTML=h}
+function hintsHTML(p){let h='';
+ if(G.hint>=1)h+=`<div class="hint"><b>Pista 1 · ¿Qué me preguntan?</b><br>${p.q} (la he marcado en amarillo).</div>`;
+ if(G.hint>=2)h+=`<div class="hint"><b>Pista 2 · Los datos</b><br>Los números importantes están marcados: ${(p.t.match(/\d+(?:[:,.\/]\d+)?/g)||[]).map(x=>`<span class="tag">${x}</span>`).join(' ')}</div>`;
+ if(G.hint>=3)h+=`<div class="hint"><b>Pista 3 · ¿Qué hago?</b><br>${p.p}</div>`;
+ if(G.hint>=4){const c=p.c.slice(0,-1).map(x=>Array.isArray(x)?`${x[0]} = ${fmt2(x[1])}`:x);const last=p.c[p.c.length-1];if(Array.isArray(last))c.push(`${last[0]} = <b>?</b>`);h+=`<div class="hint"><b>Pista 4 · Las cuentas</b><div class="calc">${c.join('<br>')}</div></div>`}
+ return h}
+const fmt2=v=>typeof v==='number'?fmt(v):v;
+const ansTxt=p=>typeof p.a==='number'?`${fmt(p.a)}${p.u?' '+p.u:''}`:p.a;
+function solHTML(p){const ok=G.res[G.i];return `<div class="sol ${ok?'':'bad'}"><b>${ok?'✅ ¡Correcto!':'📘 Así se resuelve:'}</b><br>${p.p}<div class="calc" style="margin-top:6px">${p.c.map(x=>Array.isArray(x)?`${x[0]} = ${fmt2(x[1])}`:x).join('<br>')}</div><div style="margin-top:6px;font-weight:800">Respuesta: ${ansTxt(p)}</div></div>`}
+function useHint(){if(G.hint>=4)return;G.hint++;G.hintsUsed++;ST.stats.hints++;save();sfx('tap');
+ if(G.hint===3&&G.phase==='op'){/* la pista 3 revela la operación con su explicación */}
+ vPlay();const hs=document.querySelectorAll('.hint');if(hs.length)hs[hs.length-1].scrollIntoView({behavior:'smooth',block:'center'});if(ST.voice&&G.hint===3)speak(G.probs[G.i].p)}
+function pickOp(o){const p=G.probs[G.i];if(o===p.op){sfx('ok');G.phase='ans';G.opOk=true;G.msg={t:pick(['¡Bien elegido! Ahora haz la cuenta ✏️','¡Eso es! Toca calcular 🧮','¡Correcto! Vamos con la cuenta']),anim:true}}
+ else{sfx('ko');G.opWrong.push(o);ST.stats.opErr++;save();G.msg={t:G.opWrong.length>=2?`Piensa: ${p.p} <br><a href="#" onclick="helpOp();return false">🆘 Ver la guía de operaciones</a>`:pick(['Mmm, no es esa. ¿Qué pasa en el problema: se junta, se quita, se repite o se reparte? 🤔','Vuelve a leer la pregunta con calma 👀']),anim:false}}
+ vPlay()}
+function key(k){if(G.done||G.phase!=='ans')return;sfx('tap');if(k==='del')G.input=G.input.slice(0,-1);else if(k===','){if(!G.input.includes(','))G.input+=(G.input?'':'0')+','}else if(G.input.length<9)G.input=(G.input==='0'?'':G.input)+k;G.state='';const d=$('#disp');if(d){d.innerHTML=G.input||'<span style="opacity:.25">?</span>';d.className='disp'}}
+document.addEventListener('keydown',e=>{if(SCREEN!=='play'||!G||G.done)return;if(/^[0-9]$/.test(e.key))key(e.key);else if(e.key===','||e.key==='.')key(',');else if(e.key==='Backspace')key('del');else if(e.key==='Enter')check()});
+function check(){const p=G.probs[G.i];if(!G.input){const d=$('#disp');if(d){d.classList.add('no');setTimeout(()=>d.classList.remove('no'),400)}return}
+ const v=parseFloat(G.input.replace(',','.'));judge(Math.abs(v-p.a)<.005)}
+function pickChoice(c){if(G.done)return;G.picked=c;judge(c===String(G.probs[G.i].a))}
+function judge(ok){const p=G.probs[G.i];G.tries++;
+ if(ok){G.state='yes';const coins=G.tries===1?(G.hint?7:10):5;finishProb(true,coins);G.msg={t:G.tries===1?pick(OKM):pick(OK2),anim:true};if(G.tries>1)ST.comeback++;sfx('ok');vPlay();coinFly(coins,$('.mascot'));if(G.tries===1&&!G.hint)confetti(40)}
+ else if(G.tries<2){G.state='no';sfx('ko');G.msg={t:pick(KO1),anim:false};vPlay();setTimeout(()=>{G.input='';G.state='';G.picked=null;if(SCREEN==='play'&&!G.done)vPlay()},900)}
+ else{G.state='no';sfx('ko');finishProb(false,1);G.msg={t:'No pasa nada. Mira cómo se hace y el siguiente te saldrá mejor 💜 (+1 🪙 por intentarlo)',anim:false};vPlay();setTimeout(()=>{const s=$('.sol');if(s)s.scrollIntoView({behavior:'smooth',block:'center'})},100)}}
+function finishProb(ok,coins){const p=G.probs[G.i];G.done=true;G.res.push(ok);addCoins(coins);markDay();
+ const s=ST.stats;s.done++;if(ok)s.ok++;if(ok&&G.tries===1)s.first++;const k=lvKey(p.w,p.l);s.lv[k]=s.lv[k]||{n:0,ok:0,f:0};s.lv[k].n++;if(ok)s.lv[k].ok++;if(ok&&G.tries===1)s.lv[k].f++;save();renderTop()}
+function markDay(){const t=today();if(ST.lastDay===t)return;ST.streak=ST.lastDay===yesterday()?ST.streak+1:1;ST.maxStreak=Math.max(ST.maxStreak,ST.streak);ST.lastDay=t;if(!ST.days.includes(t))ST.days.push(t)}
+function redoProb(nuevo){sfx('tap');const old=G.probs[G.i];if(nuevo){const p=genLevel(old.w,old.l,1)[0];G.probs[G.i]=p}G.res.pop();G.opOk=false;newProb();vPlay();scrollTo(0,0)}
+function nodeTap(w,l){const k=lvKey(w,l),s=ST.stars[k]||0;if(!s){startLevel(w,l);return}sfx('tap');const W=WORLDS[w-1];
+ modal(`<div style="font-size:50px">${W.emo}</div><h2>${W.lv[l-1]}</h2><div style="font-size:30px;margin:6px 0">${'⭐'.repeat(s)}${'☆'.repeat(3-s)}</div><p class="mut" style="font-weight:700">Mundo ${w} · nivel ${l}</p>
+ <div style="display:flex;flex-direction:column;gap:10px"><button class="btn" onclick="closeModal();startLevel(${w},${l})">▶ Jugar otra vez</button>
+ <button class="btn sec" onclick="resetLevel(${w},${l})">🔄 Reiniciar (ponerlo como no hecho)</button><button class="btn sec" onclick="closeModal()">Cerrar</button></div>`)}
+function resetLevel(w,l,silent){const k=lvKey(w,l);ST.cleared=ST.cleared||{};if(ST.stars[k])ST.cleared[k]=1;delete ST.stars[k];if(ST.stats.lv[k])delete ST.stats.lv[k];save();if(silent)return;closeModal();render();toast('🔄','Nivel reiniciado','Ahora está como no hecho. Los niveles siguientes siguen abiertos, ¡puedes volver a por las estrellas cuando quieras!')}
+function nextProb(){sfx('tap');if(G.i<G.probs.length-1){G.i++;G.opOk=false;newProb();vPlay();scrollTo(0,0)}else endLevel()}
+function quitLevel(){modal(`<div class="bigemo" style="animation:none">🤔</div><h2>¿Salir del nivel?</h2><p class="mut">Perderás lo que llevas de este nivel (las monedas ganadas te las quedas).</p><div style="display:flex;flex-direction:column;gap:10px"><button class="btn" onclick="closeModal()">Seguir jugando</button>${G.mode==='lvl'?`<button class="btn sec" onclick="closeModal();startLevel(${G.w},${G.l})">🔄 Empezar este nivel de nuevo</button>`:''}<button class="btn sec" onclick="closeModal();go('map')">Salir al mapa</button></div>`)}
+
+// ---- final ----
+let END=null;
+function endLevel(){const ok=G.res.filter(Boolean).length;const stars=ok>=5?3:ok===4?2:ok===3?1:0;let bonus=0;
+ if(G.mode==='lvl'){const k=lvKey(G.w,G.l),old=ST.stars[k]||0;ST.paid=ST.paid||{};ST.cleared=ST.cleared||{};const pd=ST.paid[k]||0;if(stars>pd){bonus=(stars-pd)*20+(pd===0?10:0);ST.paid[k]=stars}if(stars>old)ST.stars[k]=stars;if(stars>0)ST.cleared[k]=1;if(stars>0&&G.hintsUsed===0)ST.noHint++}
+ else{if(ST.reto!==today()){bonus=40;ST.reto=today();ST.retos++}}
+ addCoins(bonus);save();END={ok,stars,bonus,mode:G.mode};SCREEN='end';render();
+ const nuevos=checkAch();
+ if(stars>0||G.mode==='reto'){sfx('win');confetti(stars===3?220:120)}
+ if(nuevos.length)setTimeout(()=>showAch(nuevos,0),1600)}
+function showAch(list,i){if(i>=list.length)return;const a=list[i];sfx('ach');confetti(60);modal(`<div style="font-weight:800;color:var(--mut)">¡NUEVO LOGRO!</div><div class="bigemo">${a[1]}</div><h2>${a[2]}</h2><p class="mut" style="font-weight:700">${a[3]}</p><button class="btn" onclick="closeModal();setTimeout(()=>showAch(END_ACH,${i+1}),250)">¡Genial!</button>`);window.END_ACH=list}
+function vEnd(){const e=END;let h=`<div class="card center" style="margin-top:24px">`;
+ if(e.mode==='reto'){h+=`<div class="bigemo">🎁</div><h1>¡Reto del día completado!</h1><div class="res">${G.res.map(r=>r?'✅':'❌').join('')}</div><p style="font-weight:800">${e.ok} de 5 aciertos</p>${e.bonus?`<p class="big" style="font-size:26px">Cofre: +${e.bonus} 🪙</p>`:''}`}
+ else{const W=WORLDS[G.w-1];h+=`<div class="mut" style="font-weight:800">${W.emo} Mundo ${G.w} · ${W.lv[G.l-1]}</div>
+  <h1 style="margin-top:6px">${['¡Casi lo tienes!','¡Nivel superado!','¡Muy bien!','¡PERFECTO!'][e.stars]}</h1>
+  <div class="stars">${[1,2,3].map(s=>`<span class="${s<=e.stars?'on':''}" style="animation-delay:${s*.35}s">⭐</span>`).join('')}</div>
+  <div class="res">${G.res.map(r=>r?'✅':'❌').join('')}</div>
+  <p style="font-weight:800">${e.ok} de 5 aciertos${e.bonus?` · bonus +${e.bonus} 🪙`:''}</p>
+  ${e.stars===0?`<p class="mut" style="font-weight:700">Necesitas 3 aciertos para pasar. Cada intento te hace más fuerte 💪 ¡Prueba otra vez usando las pistas!</p>`:''}`}
+ h+=`<div class="mascot" style="justify-content:center">${avatar('m')}</div><div class="row" style="justify-content:center;margin-top:14px">`;
+ if(e.mode==='lvl'){const nx=G.l<5?[G.w,G.l+1]:(G.w<8?[G.w+1,1]:null);
+  h+=`<button class="btn sec" onclick="startLevel(${G.w},${G.l})">🔁 Repetir</button>`;
+  if(e.stars>0&&nx)h+=`<button class="btn" onclick="startLevel(${nx[0]},${nx[1]})">Siguiente nivel ➜</button>`}
+ h+=`<button class="btn ${e.mode==='lvl'&&e.stars>0?'sec':''}" onclick="go('map')">🗺️ Mapa</button></div></div>`;
+ $('#app').innerHTML=h}
+
+// ================= EXPLICACIONES (antes de cada mundo) =================
+const LESSONS=[
+ [{e:'➕',t:'Sumar = juntar o añadir',cuando:'Cuando dos cantidades se juntan o te dan más. Al final hay MÁS que al principio.',pal:['le regalan','llegan','en total','entre los dos','más que','juntos'],ej:'Tengo 8 cromos y me regalan 5 → 8 + 5 = 13 cromos.',por:'Porque estamos poniendo cosas juntas en el mismo montón.'},
+  {e:'➖',t:'Restar = quitar, lo que queda o lo que falta',cuando:'Cuando se quita algo, cuando preguntan lo que queda o lo que falta, o cuando comparas (¿cuánto más tiene uno que otro?).',pal:['pierde','se come','se bajan','gasta','quedan','faltan','¿cuánto más…?','menos que'],ej:'Tengo 20 caramelos y me como 6 → 20 − 6 = 14 caramelos.',por:'Porque al final hay MENOS, o porque buscamos la diferencia entre dos números.'},
+  {e:'🕵️',t:'Truco anti-trampas',cuando:'Algunas palabras engañan. «Completar el álbum» suena a sumar, pero si preguntan cuántos FALTAN se resta. Si preguntan «¿cuántos más tiene A que B?», también se resta.',pal:['faltan → resta','diferencia → resta','más que → suma'],ej:'Quiero 50 cromos y tengo 30. ¿Cuántos faltan? → 50 − 30 = 20.',por:'Imagina la escena como una peli: ¿al final hay más o hay menos? Eso te dice la operación.'}],
+ [{e:'✖️',t:'Multiplicar = sumar lo mismo muchas veces',cuando:'Cuando hay GRUPOS IGUALES: varias cajas con lo mismo, filas iguales, «cada uno trae…».',pal:['cada','paquetes de','filas de','cajas de','veces','por semana'],ej:'4 paquetes de 6 pegatinas → 6 + 6 + 6 + 6 = 4 × 6 = 24.',por:'Porque es una suma repetida, pero más rápida.'},
+  {e:'➗',t:'Dividir = repartir o hacer grupos',cuando:'Cuando tienes un TOTAL y lo repartes a partes iguales, o cuando haces grupos y quieres saber cuántos salen.',pal:['reparte','a partes iguales','cada uno recibe','grupos de','¿cuántos caben?','a medias'],ej:'24 caramelos entre 4 amigos → 24 ÷ 4 = 6 caramelos cada uno.',por:'Porque partimos el total en trozos iguales.'},
+  {e:'🤔',t:'¿Multiplico o divido?',cuando:'Pregúntate: ¿conozco el TOTAL? Entonces seguramente divido. ¿Conozco lo que hay en cada grupo y cuántos grupos hay, pero no el total? Entonces multiplico.',pal:['sé el total → ÷','busco el total → ×'],ej:'Si me dicen «hay 30 alumnos en grupos de 5» → sé el total (30) → 30 ÷ 5 = 6 grupos.',por:'Multiplicar y dividir son operaciones contrarias: una construye el total, la otra lo parte.'},
+  {e:'🧩',t:'¿Y lo que sobra?',cuando:'A veces la división no es exacta y sobra algo (el resto). Piensa qué pasa con lo que sobra.',pal:['¿cuántos coches hacen falta? → suma 1 más','¿cuántas llenas? → no cuentes lo que sobra','¿cuántos sobran? → el resto'],ej:'22 niños en coches de 5 → 22 ÷ 5 = 4 y sobran 2. ¡Esos 2 también viajan! → 5 coches.',por:'Porque nadie se puede quedar en tierra 😄'}],
+ [{e:'🪜',t:'Problemas de 2 pasos',cuando:'Cuando para responder te falta un dato que primero tienes que calcular. Es como subir una escalera: escalón 1 y luego escalón 2.',pal:['y después','y luego','cada uno… y paga con','ya tenía'],ej:'Compro 3 cuadernos a 2 € y pago con 10 €. Paso 1: 3 × 2 = 6 €. Paso 2: 10 − 6 = 4 € de cambio.',por:'Porque la pregunta (el cambio) depende de algo que no te dicen (lo que cuestan los cuadernos).'},
+  {e:'🗺️',t:'El plan en 3 preguntas',cuando:'1) ¿Qué me preguntan? 2) ¿Qué necesito saber antes? 3) ¿Con qué operación lo saco? Hazte esas preguntas antes de hacer cuentas.',pal:['primero…','después…'],ej:'«¿Cuánto le queda?» → necesito saber cuánto tenía en total antes de gastar.',por:'Porque si empiezas a hacer cuentas sin plan, es fácil liarse.'},
+  {e:'✅',t:'Comprueba si tiene sentido',cuando:'Al terminar, mira si el resultado es lógico. Si gastas dinero, te tiene que quedar MENOS de lo que tenías.',pal:['¿es lógico?','¿es más o menos?'],ej:'Si tenías 20 € y te sale que te quedan 35 €… ¡algo ha fallado!',por:'Porque así pillas tus propios errores antes de responder.'}],
+ [{e:'💶',t:'Euros y céntimos',cuando:'1 € = 100 céntimos. 2,50 € son 2 euros y 50 céntimos.',pal:['coma = separa euros y céntimos'],ej:'3,75 € + 1,50 € → euros con euros (3 + 1 = 4) y céntimos con céntimos (75 + 50 = 125 = 1,25 €) → 5,25 €.',por:'Porque la coma separa dos «unidades» distintas.'},
+  {e:'🧾',t:'¿Qué operación en las compras?',cuando:'Precio de varias cosas distintas → sumar. Cambio que te devuelven → restar (lo que pagas − lo que cuesta). Varias cosas iguales → multiplicar. Pagar a medias → dividir.',pal:['juntas → +','cambio/devuelven → −','cada uno cuesta… y compro varios → ×','a partes iguales → ÷'],ej:'Pago con 10 € algo de 6,40 € → 10 − 6,40 = 3,60 € de cambio.',por:'Son las mismas 4 operaciones de siempre, ¡solo que con dinero!'},
+  {e:'🪙',t:'Truco: piensa en céntimos',cuando:'Si la coma te lía, pasa todo a céntimos, haz la cuenta y vuelve a euros.',pal:['×100 para céntimos','÷100 para volver a euros'],ej:'2,40 € × 3 → 240 × 3 = 720 céntimos = 7,20 €.',por:'Porque con números enteros es más fácil no equivocarse.'}],
+ [{e:'🍕',t:'¿Qué es una fracción?',cuando:'3/4 significa: partimos algo en 4 trozos iguales (denominador, abajo) y cogemos 3 (numerador, arriba).',pal:['la mitad = 1/2','un tercio = 1/3','la cuarta parte = 1/4'],ej:'Una pizza en 8 trozos; me como 3 → me he comido 3/8.',por:'Porque así podemos hablar de partes de algo.'},
+  {e:'🔢',t:'Fracción de un número',cuando:'Para calcular 3/4 de 20: primero DIVIDE entre el de abajo (20 ÷ 4 = 5, eso es un trozo) y luego MULTIPLICA por el de arriba (5 × 3 = 15).',pal:['de abajo → divido','de arriba → multiplico'],ej:'2/5 de 30 € → 30 ÷ 5 = 6 → 6 × 2 = 12 €.',por:'Porque primero averiguas cuánto vale un trozo y luego cuántos trozos te piden.'},
+  {e:'🥧',t:'Lo que queda y sumar fracciones',cuando:'Lo que queda = el total menos la parte que se va. Para sumar fracciones con el mismo número abajo, sumas los de arriba y el de abajo se queda igual.',pal:['queda → resta','mismo denominador → suma arriba'],ej:'2/7 + 3/7 = 5/7. Si me bebo 3/5 de una botella, queda 2/5.',por:'Porque los trozos son del mismo tamaño, solo contamos cuántos hay.'}],
+ [{e:'⏰',t:'Horas y minutos',cuando:'1 hora = 60 minutos. Para saber cuánto dura algo, cuenta desde que empieza hasta que termina. Truco: primero hasta la hora en punto.',pal:['dura','empieza','termina','llega'],ej:'De 17:40 a 18:15 → hasta las 18:00 hay 20 min, y luego 15 más → 35 minutos.',por:'Porque el reloj cambia de hora cada 60 minutos, no cada 100.'},
+  {e:'📏',t:'Cambiar de unidad',cuando:'De una unidad GRANDE a una pequeña → multiplico (salen más). De pequeña a grande → divido (salen menos).',pal:['1 km = 1000 m','1 m = 100 cm','1 kg = 1000 g','1 l = 1000 ml','1 h = 60 min'],ej:'3 kg → gramos: 3 × 1000 = 3000 g. 400 cm → metros: 400 ÷ 100 = 4 m.',por:'Porque una cosa grande «cabe» muchas veces en unidades pequeñas.'},
+  {e:'🥤',t:'Problemas con medidas',cuando:'Primero pon todo en la MISMA unidad y luego haz la operación del problema.',pal:['misma unidad primero'],ej:'Una botella de 1 litro en vasos de 250 ml → 1 l = 1000 ml → 1000 ÷ 250 = 4 vasos.',por:'Porque no se pueden mezclar litros con mililitros en la misma cuenta.'}],
+ [{e:'💯',t:'¿Qué es un porcentaje?',cuando:'El % significa «de cada 100». El 25 % es 25 de cada 100.',pal:['50 % = la mitad (÷2)','25 % = la cuarta parte (÷4)','20 % = ÷5','10 % = ÷10'],ej:'El 10 % de 80 → 80 ÷ 10 = 8.',por:'Porque los porcentajes comparan todo con 100.'},
+  {e:'🏷️',t:'Descuentos',cuando:'Paso 1: calcula cuánto te descuentan. Paso 2: réstalo al precio.',pal:['rebaja','descuento','con el descuento'],ej:'60 € con un 50 % → descuento 60 ÷ 2 = 30 → 60 − 30 = 30 €.',por:'Porque el descuento es lo que te quitan del precio.'},
+  {e:'⚖️',t:'Si 1 cuesta… (regla de tres)',cuando:'Si te dicen cuánto valen varias cosas iguales y te preguntan por otra cantidad: primero calcula lo que vale UNA (dividiendo) y luego multiplica.',pal:['primero 1','luego los que pidan'],ej:'3 libretas cuestan 6 € → 1 cuesta 6 ÷ 3 = 2 € → 7 libretas = 2 × 7 = 14 €.',por:'Porque si sabes lo que vale una, puedes saber lo que valen cualquier número.'}],
+ [{e:'🔲',t:'Perímetro = el borde',cuando:'Cuando preguntan por algo que RODEA la figura: una valla, un marco, una cinta. Se suman todos los lados.',pal:['valla','alrededor','marco','rodear','borde'],ej:'Huerto de 8 m × 5 m → 8 + 5 + 8 + 5 = 26 m de valla.',por:'Porque el perímetro mide la línea de fuera.'},
+  {e:'🟩',t:'Área = la superficie de dentro',cuando:'Cuando preguntan por lo que CUBRE la figura: suelo, alfombra, césped, pintura. Rectángulo: largo × ancho. Triángulo: base × altura ÷ 2.',pal:['m²','suelo','alfombra','cubrir','superficie'],ej:'Alfombra de 4 m × 3 m → 4 × 3 = 12 m².',por:'Porque el área cuenta cuántos cuadraditos de 1 m × 1 m caben dentro.'},
+  {e:'✂️',t:'Figuras raras',cuando:'Si la figura es rara (como una L), pártela en rectángulos, calcula cada área y súmalas.',pal:['partir en trozos','sumar las áreas'],ej:'Una L = rectángulo 3×4 (12 m²) + rectángulo 2×2 (4 m²) = 16 m².',por:'Porque es más fácil con trozos que ya sabes calcular.'}],
+];
+let LW=1,LI=0,LTHEN=null;
+function openLesson(w,then){LW=w;LI=0;LTHEN=then||null;SCREEN='learn';render();scrollTo(0,0)}
+function vLearn(){const W=WORLDS[LW-1],L=LESSONS[LW-1],c=L[LI];
+ $('#app').innerHTML=`<div class="world" style="background:linear-gradient(135deg,${W.g[0]},${W.g[1]});margin-top:14px"><div class="wemo">${W.emo}</div><div class="small" style="font-weight:800;opacity:.85">ANTES DE EMPEZAR · MUNDO ${LW}</div><h2>${W.name}</h2><div class="wdesc">Explicación ${LI+1} de ${L.length}</div></div>
+ <div class="card lesson"><button class="say" onclick="speak(LESSONS[LW-1][LI].t+'. '+LESSONS[LW-1][LI].cuando+' Ejemplo: '+LESSONS[LW-1][LI].ej+' ¿Por qué? '+LESSONS[LW-1][LI].por)">🔊</button>
+ <div style="font-size:56px;line-height:1">${c.e}</div><h2 style="font-size:26px;margin:6px 0 10px">${c.t}</h2>
+ <div class="lbox"><b>¿Cuándo?</b><br>${c.cuando}</div>
+ <div class="lbox"><b>Palabras pista 🔑</b><br>${c.pal.map(x=>`<span class="tag" style="margin:3px 3px 0 0;display:inline-block">${x}</span>`).join('')}</div>
+ <div class="lbox ex"><b>Ejemplo ✏️</b><br><span class="calc" style="font-size:19px">${c.ej}</span></div>
+ <div class="lbox why"><b>¿Por qué? 💭</b><br>${c.por}</div></div>
+ <div class="dots" style="max-width:200px;margin:0 auto">${L.map((_,k)=>`<div class="dot ${k<=LI?'ok':''}"></div>`).join('')}</div>
+ <div class="acts">${LI>0?`<button class="btn sec" onclick="LI--;vLearn()">⬅ Atrás</button>`:`<button class="btn sec" onclick="LTHEN?endLesson():go('learnlist')">⬅ Salir</button>`}
+ ${LI<L.length-1?`<button class="btn" onclick="LI++;sfx('tap');vLearn();scrollTo(0,0)">Siguiente ➜</button>`:`<button class="btn" onclick="endLesson()">${LTHEN?'¡Entendido, a jugar! 🚀':'¡Entendido! ✅'}</button>`}</div>`}
+function endLesson(){ST.seen=ST.seen||{};ST.seen[LW]=1;save();sfx('ok');if(LTHEN){const f=LTHEN;LTHEN=null;f()}else go('learnlist')}
+function vLearnList(){$('#app').innerHTML=`<h1 class="h2">📖 Aprender</h1><p class="mut" style="font-weight:700">Aquí tienes las explicaciones de cada mundo para repasar cuando quieras.</p>
+ ${WORLDS.map((W,i)=>{const o=isOpen(i+1,1);return `<button class="world ${o?'':'locked'}" style="width:100%;text-align:left;background:linear-gradient(135deg,${W.g[0]},${W.g[1]});margin:12px 0" ${o?`onclick="openLesson(${i+1})"`:''}><div class="wemo" style="font-size:48px">${o?W.emo:'🔒'}</div><div class="small" style="font-weight:800;opacity:.85">MUNDO ${i+1}</div><h2 style="font-size:21px">${W.name}</h2><div class="wdesc">${LESSONS[i].map(c=>c.e+' '+c.t).join(' · ')}</div></button>`}).join('')}`}
+
+// ================= «ME HE ATASCADO» =================
+function stuck(){sfx('tap');modal(`<div style="font-size:52px">🆘</div><h2>¿Dónde te has atascado?</h2><p class="mut" style="font-weight:700;margin-top:4px">Elige lo que te pasa y te ayudo con eso 💜</p>
+ <div class="stuck">
+ <button onclick="helpRead()">😵‍💫 <span><b>No entiendo el problema</b><br><small>No sé bien qué está pasando</small></span></button>
+ <button onclick="helpOp()">🤔 <span><b>No sé qué operación hacer</b><br><small>¿Sumo, resto, multiplico o divido?</small></span></button>
+ <button onclick="helpCalc()">✏️ <span><b>No sé hacer la cuenta</b><br><small>Sé la operación pero me lío al calcular</small></span></button>
+ <button onclick="helpCheck()">😖 <span><b>Me sale mal y no sé por qué</b><br><small>He hecho algo pero no es correcto</small></span></button>
+ </div><button class="btn sec" style="margin-top:12px" onclick="closeModal()">Cerrar</button>`)}
+function helpBox(title,body){modal(`<h2 style="margin-bottom:10px">${title}</h2><div style="text-align:left;font-weight:600">${body}</div><div class="row" style="justify-content:center;margin-top:14px"><button class="btn sec" onclick="stuck()">⬅ Otra duda</button><button class="btn" onclick="closeModal();vPlay()">¡Ya lo pillo! 💪</button></div>`)}
+function helpRead(){const p=G.probs[G.i];const nums=(p.t.match(/\d+(?:[:,.\/]\d+)?/g)||[]);G.hint=Math.max(G.hint,2);save();speak(p.t+' '+p.q);
+ helpBox('😵‍💫 Vamos a entenderlo juntas',`<div class="lbox"><b>1. Te lo leo en voz alta</b> 🔊 (escúchalo con calma, o léelo tú dos veces).</div>
+ <div class="lbox"><b>2. Lo que te preguntan es:</b><br><span class="tag" style="font-size:16px">${p.q}</span></div>
+ <div class="lbox"><b>3. Los datos (números) que te dan:</b><br>${nums.map(x=>`<span class="tag" style="font-size:16px;margin-right:4px">${x}</span>`).join('')||'—'}</div>
+ <div class="lbox"><b>4. Imagínalo como una peli 🎬</b><br>Cuéntate la historia con tus palabras. Hazte estas preguntas:<ul style="margin:6px 0 0;padding-left:20px"><li>¿Al final hay <b>más</b> o <b>menos</b> que al principio?</li><li>¿Se <b>repite</b> la misma cantidad varias veces?</li><li>¿Se <b>reparte</b> algo en partes iguales?</li></ul>Si quieres, dibújalo en un papel con palitos o bolitas.</div>`)}
+function helpOp(){const p=G.probs[G.i];G.hint=Math.max(G.hint,3);save();
+ const tree=`<div class="tree">
+ <div><span class="opb">+</span><span>¿Se <b>juntan</b> cosas o te <b>dan más</b>? → <b>sumar</b></span></div>
+ <div><span class="opb">−</span><span>¿Se <b>quita</b> algo, preguntan lo que <b>queda</b>, lo que <b>falta</b> o la <b>diferencia</b>? → <b>restar</b></span></div>
+ <div><span class="opb">×</span><span>¿Hay <b>grupos iguales</b> que se repiten (cajas de…, cada uno…)? → <b>multiplicar</b></span></div>
+ <div><span class="opb">÷</span><span>¿Tienes un <b>total</b> que se <b>reparte</b> o se hace en grupos? → <b>dividir</b></span></div></div>`;
+ helpBox('🤔 ¿Qué operación?',`${tree}<div class="lbox why" style="margin-top:10px"><b>En este problema:</b><br>${p.p}</div><p class="small mut" style="margin-top:8px">📖 ¿Quieres repasar la explicación del mundo? <a href="#" onclick="closeModal();openLesson(${p.w},()=>{SCREEN='play';render()});return false">Ábrela aquí</a> (luego vuelves a este problema).</p>`)}
+function howTo(expr){const m=/^([\d.,]+) ([+−×÷]) ([\d.,]+)$/.exec(expr);if(!m)return '';const pn=x=>parseFloat(x.replace(/\./g,'').replace(',','.'));const a=pn(m[1]),o=m[2],b=pn(m[3]);
+ if(!Number.isInteger(a)||!Number.isInteger(b))return `<div class="small">💡 Hay comas: pasa a céntimos (×100), haz la cuenta sin coma y al final vuelve a poner la coma (÷100). Pon la coma debajo de la coma.</div>`;
+ if(o==='+'&&b>=10){const t=b-b%10,u=b%10;return `<div class="small">💡 Por partes: primero ${a} + ${t} = ${a+t}${u?`, luego ${a+t} + ${u} = <b>?</b>`:''}. O en columna: unidades con unidades y, si pasa de 9, te llevas 1.</div>`}
+ if(o==='−'&&b>=10){const t=b-b%10,u=b%10;return `<div class="small">💡 Por partes: primero ${a} − ${t} = ${a-t}${u?`, luego ${a-t} − ${u} = <b>?</b>`:''}. O cuenta hacia arriba: desde ${b} hasta ${a}, ¿cuánto hay?</div>`}
+ if(o==='+'||o==='−')return `<div class="small">💡 Cuenta con los dedos o salta de ${o==='+'?'uno en uno hacia arriba':'uno en uno hacia abajo'} desde ${a}.</div>`;
+ if(o==='×'){const [x,y]=a>=b?[a,b]:[b,a];if(x<=10)return `<div class="small">💡 Es la tabla del ${y}: ${[...Array(Math.min(x,4))].map((_,i)=>`${y}×${i+1}=${y*(i+1)}`).join(', ')}… sigue sumando ${y} hasta llegar a ${y}×${x}.</div>`;
+  if(y<=10){const t=x-x%10,u=x%10;return `<div class="small">💡 Parte el número grande: ${t} × ${y} = ${t*y}${u?` y ${u} × ${y} = ${u*y}. Ahora suma los dos resultados.`:'.'}</div>`}
+  return `<div class="small">💡 Multiplica en columna o parte el número en decenas y unidades.</div>`}
+ if(o==='÷'){const q=a/b;if(Number.isInteger(q)&&q<=12)return `<div class="small">💡 Busca en la tabla del ${b} qué número da ${a}: ${b}×1=${b}, ${b}×2=${b*2}, ${b}×3=${b*3}… sigue hasta llegar a ${a}.</div>`;
+  if(Number.isInteger(q)&&q>12){const big=b*10*Math.floor(q/10);return `<div class="small">💡 Parte el ${a} en trozos fáciles: ${big} ÷ ${b} = ${big/b}${a-big?` y ${a-big} ÷ ${b} = ${(a-big)/b}. Ahora suma los dos resultados.`:'.'}</div>`}
+  return `<div class="small">💡 Busca el número de la tabla del ${b} que más se acerca a ${a} sin pasarse. Lo que falta hasta ${a} es lo que sobra.</div>`}
+ return ''}
+function helpCalc(){const p=G.probs[G.i];G.hint=Math.max(G.hint,4);save();
+ const lines=p.c.map((x,k)=>{const last=k===p.c.length-1;if(!Array.isArray(x))return `<div class="lbox calc" style="font-size:18px">${x}</div>`;
+  return `<div class="lbox"><div class="calc" style="font-size:20px">Paso ${k+1}: ${x[0]} = ${last?'<b>?</b>':fmt2(x[1])}</div>${howTo(x[0])}</div>`}).join('');
+ helpBox('✏️ Vamos con las cuentas',`<p style="margin:0 0 8px">${p.c.length>1?'Este problema tiene varios pasos. Hazlos en orden:':'Esta es la cuenta que hay que hacer:'}</p>${lines}<p class="small mut">El último resultado es tu respuesta. ¡Escríbelo tú! ✍️</p>`)}
+function helpCheck(){const p=G.probs[G.i];
+ helpBox('😖 Vamos a buscar el fallo',`<div class="lbox"><b>1. ¿Has usado los números correctos?</b><br>Mira que no te hayas dejado ninguno ni hayas copiado uno mal.</div>
+ <div class="lbox"><b>2. ¿Tiene sentido tu resultado?</b><br>Si en el problema se quita algo, el resultado tiene que ser <b>más pequeño</b>. Si se junta o se repite, <b>más grande</b>.</div>
+ <div class="lbox"><b>3. Comprueba con la operación contraria 🔄</b><br>Si has sumado, resta para comprobar. Si has dividido, multiplica. Ejemplo: 24 ÷ 4 = 6 → 6 × 4 = 24 ✅</div>
+ <div class="lbox"><b>4. ¿Has hecho todos los pasos?</b><br>${p.c.length>1?`Este problema tiene <b>${p.c.length} pasos</b>. ¡Quizá te falte alguno!`:'Este problema se resuelve con una sola cuenta.'}</div>
+ ${p.u?`<div class="lbox"><b>5. Mira la unidad</b><br>La respuesta va en <span class="tag">${p.u}</span>.</div>`:''}`)}
+
+// ---- logros ----
+function vAch(){const n=Object.keys(ST.ach).length;$('#app').innerHTML=`<h1 class="h2">🏆 Mis logros</h1><p class="mut" style="font-weight:700">${n} de ${ACH.length} conseguidos · Racha máxima: ${ST.maxStreak} días 🔥</p>
+ <div class="grid">${ACH.map(a=>`<div class="badge ${ST.ach[a[0]]?'':'off'}"><div class="i">${a[1]}</div><b>${a[2]}</b><p>${a[3]}</p></div>`).join('')}</div>`}
+
+// ---- tienda ----
+function vShop(){const tab=SHOPTAB;let items='';
+ if(tab==='av')items=SHOP.av.map(([e,c])=>itemHTML('av',e,c,`<div class="i">${e}</div>`,ST.avatar===e)).join('');
+ if(tab==='acc')items=SHOP.acc.map(([e,c,n])=>itemHTML('acc',e,c,`<div class="i">${e||'🚫'}</div>${n?`<div class="small mut">${n}</div>`:''}`,ST.acc===e)).join('');
+ if(tab==='th')items=SHOP.th.map(([e,c,n,g])=>itemHTML('th',e,c,`<div class="sw" style="background:linear-gradient(135deg,${g})"></div><b>${n}</b>`,ST.theme===e)).join('');
+ $('#app').innerHTML=`<h1 class="h2">🛍️ Tienda</h1><div class="hello">${avatar('l')}<div class="bubble">Tienes <b>${ST.coins} 🪙</b>. ¡Gana más resolviendo problemas!</div></div>
+ <div class="tabs">${[['av','🐾 Compañeros'],['acc','🎩 Accesorios'],['th','🎨 Colores']].map(([k,t])=>`<button class="${tab===k?'on':''}" onclick="SHOPTAB='${k}';vShop()">${t}</button>`).join('')}</div><div class="grid">${items}</div>`}
+function itemHTML(cat,id,cost,inner,on){const own=ST.owned.includes(cat+':'+id)||ST.owned.includes(id)&&cat!=='acc'||cost===0;
+ return `<div class="item">${inner}${on?`<button class="btn" disabled>✓ Puesto</button>`:own?`<button class="btn sec" onclick="equip('${cat}','${id}')">Ponerme</button>`:`<button class="btn gold" ${ST.coins<cost?'disabled':''} onclick="buy('${cat}','${id}',${cost})">${cost} 🪙</button>`}</div>`}
+function equip(cat,id){sfx('tap');if(cat==='av')ST.avatar=id;if(cat==='acc')ST.acc=id;if(cat==='th')ST.theme=id;save();render()}
+function buy(cat,id,cost){if(ST.coins<cost)return;ST.coins-=cost;ST.owned.push(cat+':'+id);ST.shopped++;equip(cat,id);sfx('win');confetti(70);const n=checkAch();if(n.length)setTimeout(()=>showAch(n,0),900)}
+
+// ---- zona familia (padres) ----
+function vParents(){if(!PARENT_OK){$('#app').innerHTML=`<div class="card center" style="margin-top:24px"><div class="bigemo" style="animation:none">👪</div><h2>Zona de la familia</h2>
+  <p class="mut" style="font-weight:700">${ST.pin?'Introduce el PIN de 4 cifras.':'Primera vez: elige un PIN de 4 cifras para esta zona (solo para mayores).'}</p>
+  <input class="txt" id="pin" inputmode="numeric" maxlength="4" style="text-align:center;letter-spacing:10px;max-width:200px" type="password"><br><br><button class="btn" onclick="pinOk()">Entrar</button><p class="small mut" id="pinmsg"></p></div>`;return}
+ const s=ST.stats,pc=(a,b)=>b?Math.round(a/b*100):0;
+ let rows='';WORLDS.forEach((W,i)=>{const w=i+1;let n=0,ok=0,f=0;for(let l=1;l<=5;l++){const x=s.lv[lvKey(w,l)];if(x){n+=x.n;ok+=x.ok;f+=x.f||0}}const st=[1,2,3,4,5].reduce((a,l)=>a+(ST.stars[lvKey(w,l)]||0),0);
+  rows+=`<tr><td>${W.emo} ${W.name}</td><td>${st}/15</td><td>${n}</td><td><div class="bar"><i style="width:${pc(f,n)}%"></i></div><span class="small">${n?pc(f,n)+'%':'—'}</span></td></tr>`});
+ const weak=Object.entries(s.lv).filter(([k,x])=>x.n>=4&&x.f/x.n<.6).sort((a,b)=>a[1].f/a[1].n-b[1].f/b[1].n).slice(0,5).map(([k,x])=>{const [w,l]=k.split('-').map(Number);return `<li><b>${WORLDS[w-1].emo} ${WORLDS[w-1].lv[l-1]}</b> (mundo ${w}) · ${pc(x.f,x.n)}% a la primera en ${x.n} problemas</li>`}).join('');
+ const last7=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');return `<span title="${k}" style="display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;margin-right:4px;font-size:12px;font-weight:800;background:${ST.days.includes(k)?'var(--ok)':'var(--line)'};color:${ST.days.includes(k)?'#fff':'var(--mut)'}">${'LMXJVSD'[(d.getDay()+6)%7]}</span>`}).join('');
+ $('#app').innerHTML=`<h1 class="h2">👪 Zona de la familia</h1>
+ <div class="card"><h3>Resumen de ${ST.name}</h3><table>
+ <tr><td>Problemas hechos</td><td><b>${s.done}</b></td></tr><tr><td>Aciertos (contando segundo intento)</td><td><b>${pc(s.ok,s.done)}%</b></td></tr>
+ <tr><td>Aciertos a la primera</td><td><b>${pc(s.first,s.done)}%</b></td></tr><tr><td>Pistas usadas</td><td><b>${s.hints}</b></td></tr>
+ <tr><td>Fallos al elegir la operación</td><td><b>${s.opErr}</b></td></tr><tr><td>Días practicados</td><td><b>${ST.days.length}</b> · racha actual ${ST.streak} · máxima ${ST.maxStreak}</td></tr></table>
+ <p style="margin:12px 0 4px;font-weight:800">Últimos 7 días</p>${last7}</div>
+ <div class="card"><h3>Por mundos</h3><table><tr><th>Mundo</th><th>Estrellas</th><th>Problemas</th><th>A la primera</th></tr>${rows}</table></div>
+ <div class="card"><h3>🔎 Dónde le cuesta más</h3>${weak?`<ul>${weak}</ul><p class="small mut">Sugerencia: repetir ese nivel juntos, leyendo el enunciado en voz alta y usando las pistas en orden.</p>`:'<p class="mut">Aún no hay datos suficientes (se muestra cuando lleva 4+ problemas en un nivel con menos del 60% a la primera).</p>'}</div>
+ <div class="card"><h3>⚙️ Ajustes</h3>
+ <p><label style="font-weight:700"><input type="checkbox" ${ST.voice?'checked':''} onchange="ST.voice=this.checked;save()"> Leer los problemas en voz alta automáticamente</label></p>
+ <p><label style="font-weight:700"><input type="checkbox" ${ST.sound?'checked':''} onchange="ST.sound=this.checked;save();renderTop()"> Sonidos</label></p>
+ <p style="font-weight:700;margin-bottom:4px">Abrir mundos directamente (si ya domina lo básico):</p>
+ <div class="row"><select id="unl" class="txt" style="max-width:260px">${WORLDS.map((W,i)=>`<option value="${i+1}" ${ST.unlock===i+1?'selected':''}>Hasta el mundo ${i+1} · ${W.name}</option>`).join('')}</select><button class="btn sec" onclick="ST.unlock=+$('#unl').value;save();toast('🔓','Hecho','Los mundos hasta el '+ST.unlock+' están abiertos.')">Aplicar</button></div>
+ <p style="font-weight:700;margin:14px 0 4px">Nombre</p><div class="row"><input class="txt" id="nm2" value="${ST.name}" maxlength="16" style="max-width:260px"><button class="btn sec" onclick="const v=$('#nm2').value.trim();if(v){ST.name=v;PLAYER=v;save();renderTop()}">Guardar</button></div></div>
+ <div class="card"><h3>💾 Copia de seguridad</h3><p class="small mut">El progreso se guarda en este dispositivo. Para pasarlo a otra tablet o móvil, copia el código y pégalo allí.</p>
+ <div class="row"><button class="btn sec" onclick="exportar()">Copiar código</button><button class="btn sec" onclick="importar()">Pegar código</button></div><textarea id="bk" class="txt" style="margin-top:10px;font-size:12px;height:80px;display:none"></textarea></div>
+ <div class="card"><h3>💜 Consejos para acompañarla</h3><ul style="font-weight:600">
+ <li>10–15 minutos al día funcionan mejor que una hora el fin de semana. La racha 🔥 la motiva a volver.</li>
+ <li>Los 4 pasos (Leo → Datos → Operación → Calculo) son el método: pídele que te los diga en voz alta.</li>
+ <li>Las pistas no quitan estrellas: usarlas es aprender. Valora el esfuerzo más que el acierto.</li>
+ <li>Si un nivel se atasca, repetidlo juntos; los problemas cambian cada vez.</li></ul></div>
+ <div class="card"><h3>💌 Frases de ánimo</h3><p class="small mut">Cada día, la primera vez que entra, le sale una de estas frases (por orden, una distinta cada día). Escribe una por línea; podéis cambiarlas, quitarlas o añadir las vuestras.</p>
+ <p style="font-weight:700;margin:8px 0 4px">Firma</p><input class="txt" id="firma" value="${(ST.firma||'Papá y Mamá').replace(/"/g,'&quot;')}" maxlength="40">
+ <p style="font-weight:700;margin:12px 0 4px">Mensaje especial para la próxima vez que entre (opcional)</p><input class="txt" id="esp" value="${(ST.especial||'').replace(/"/g,'&quot;')}" placeholder="Ej.: ¡Mucha suerte mañana en el examen!" maxlength="200">
+ <p style="font-weight:700;margin:12px 0 4px">Frases (${(ST.frases&&ST.frases.length)||FRASES_DEF.length})</p><textarea id="frs" class="txt" style="height:200px;font-size:15px">${(ST.frases&&ST.frases.length?ST.frases:FRASES_DEF).join('\n')}</textarea>
+ <div class="row" style="margin-top:10px"><button class="btn" onclick="guardarFrases()">Guardar</button><button class="btn sec" onclick="ST.frases=FRASES_DEF.slice();save();vParents()">Volver a las de serie</button><button class="btn sec" onclick="showFrase()">👀 Ver el de hoy</button></div></div>
+ <div class="card"><h3>🔄 Reiniciar niveles</h3><p class="small mut">Pone el nivel (o el mundo entero) como no hecho: quita sus estrellas y sus estadísticas para empezarlo de cero. Lo que ya estaba abierto sigue abierto.</p>
+ <div class="row"><select id="rsw" class="txt" style="max-width:240px">${WORLDS.map((W,i)=>`<option value="${i+1}">${W.emo} Mundo ${i+1}</option>`).join('')}</select>
+ <select id="rsl" class="txt" style="max-width:220px"><option value="0">Todo el mundo</option>${[1,2,3,4,5].map(l=>`<option value="${l}">Nivel ${l}</option>`).join('')}</select>
+ <button class="btn sec" onclick="const w=+$('#rsw').value,l=+$('#rsl').value;(l?[l]:[1,2,3,4,5]).forEach(x=>resetLevel(w,x,true));vParents();toast('🔄','Reiniciado',l?'Nivel '+l+' del mundo '+w+' como no hecho.':'Mundo '+w+' entero como no hecho.')">Reiniciar</button></div></div>
+ <div class="card"><h3>Borrar todo</h3><p class="small mut">Empieza de cero (se pierde el progreso de este dispositivo).</p><button class="btn sec" style="color:var(--bad)" onclick="borrar()">Borrar progreso</button></div>
+ <p class="center"><button class="btn sec" onclick="PARENT_OK=false;go('map')">🔒 Cerrar zona familia</button></p>`}
+function guardarFrases(){const l=$('#frs').value.split('\n').map(x=>x.trim()).filter(Boolean);ST.frases=l.length?l:FRASES_DEF.slice();ST.firma=$('#firma').value.trim()||'Papá y Mamá';const e=$('#esp').value.trim();ST.especial=e;if(e&&ST.fraseDay===today()){ST.fraseDay=''}if(ST.fraseIdx>=ST.frases.length)ST.fraseIdx=-1;save();toast('💌','Guardado',e?'El mensaje especial le saldrá la próxima vez que abra el mapa.':'Las frases están guardadas.')}
+function pinOk(){const v=$('#pin').value;if(!/^\d{4}$/.test(v)){$('#pinmsg').textContent='Tienen que ser 4 cifras.';return}if(!ST.pin){ST.pin=v;save();PARENT_OK=true;vParents();return}if(v===ST.pin){PARENT_OK=true;vParents()}else{$('#pinmsg').textContent='PIN incorrecto.';$('#pin').value=''}}
+function exportar(){const c=btoa(unescape(encodeURIComponent(JSON.stringify(ST))));const t=$('#bk');t.style.display='block';t.value=c;t.select();try{navigator.clipboard.writeText(c);toast('📋','Código copiado','Pégalo en el otro dispositivo, en Familia → Pegar código.')}catch(e){}}
+function importar(){const t=$('#bk');if(t.style.display!=='block'||!t.value){t.style.display='block';t.value='';t.placeholder='Pega aquí el código y vuelve a pulsar «Pegar código»';t.focus();return}
+ try{const o=JSON.parse(decodeURIComponent(escape(atob(t.value.trim()))));if(!o.stats)throw 0;ST=Object.assign(DEF(),o);PLAYER=ST.name;save();toast('✅','Progreso recuperado','¡Todo listo!');render()}catch(e){toast('⚠️','Código no válido','Revisa que esté copiado entero.')}}
+function borrar(){modal(`<h2>¿Seguro?</h2><p class="mut">Se borran estrellas, monedas y logros de este dispositivo.</p><div class="row" style="justify-content:center"><button class="btn sec" onclick="closeModal()">Cancelar</button><button class="btn" style="background:var(--bad)" onclick="localStorage.removeItem(KEY);location.reload()">Borrar</button></div>`)}
+
+// ---- modales ----
+function modal(html){$('#modal').innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="card">${html}</div></div>`}
+function closeModal(){$('#modal').innerHTML=''}
+function toast(e,t,m){modal(`<div class="bigemo" style="animation:none">${e}</div><h2>${t}</h2><p class="mut" style="font-weight:700">${m}</p><button class="btn" onclick="closeModal()">Vale</button>`)}
+
+addEventListener('resize',()=>{cv.width=innerWidth;cv.height=innerHeight});
+try{speechSynthesis.getVoices()}catch(e){}
+render();
+</script>
+</body>
+</html>
