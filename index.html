@@ -404,7 +404,7 @@ function genLevel(w,l,n=5){const out=[],seen=new Set();let tries=0;while(out.len
 const KEY='mateaventura_v1';
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-const FREE_AV=['🦉','🦊','🐱','🐶','🐼','🐰'];
+const FREE_AV=['🦉','🐺','🦊','🐱','🐶','🐼','🐰'];
 const NOMBRE='Alejandra';
 const DEF=()=>({name:NOMBRE,avatar:'🦉',acc:'',theme:'morado',coins:0,earned:0,stars:{},stats:{done:0,ok:0,first:0,hints:0,opErr:0,lv:{}},days:[],streak:0,maxStreak:0,lastDay:'',ach:{},owned:[...FREE_AV,'morado'],pin:'',reto:'',retos:0,comeback:0,noHint:0,sound:true,voice:false,unlock:1,shopped:0});
 let ST;try{ST=Object.assign(DEF(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){ST=DEF()}
@@ -416,7 +416,7 @@ const $=s=>document.querySelector(s);
 
 // ================= TIENDA / LOGROS =================
 const SHOP={
- av:[['🦉',0],['🦊',0],['🐱',0],['🐶',0],['🐼',0],['🐰',0],['🐧',100],['🐯',120],['🐨',140],['🐙',180],['🦄',200],['🤖',220],['👽',250],['🦖',280],['🐉',350],['🦋',160]],
+ av:[['🦉',0],['🐺',0],['🦊',0],['🐱',0],['🐶',0],['🐼',0],['🐰',0],['🐧',100],['🐯',120],['🐨',140],['🐙',180],['🦄',200],['🤖',220],['👽',250],['🦖',280],['🐉',350],['🦋',160]],
  acc:[['',0,'Nada'],['🎀',60],['🌸',60],['🧢',90],['🕶️',110],['🎩',130],['⭐',150],['🎧',170],['👑',300],['🌈',250]],
  th:[['morado',0,'Morado','#7b5cff,#4f3bd1'],['oceano',150,'Océano','#22b8f0,#0a6fc2'],['bosque',150,'Bosque','#3fbf6a,#1d7a45'],['chuches',200,'Chuches','#ff6fb5,#a24bff'],['atardecer',200,'Atardecer','#ff8a4c,#e2366b'],['noche',300,'Noche','#6f7cff,#28307a']]
 };
