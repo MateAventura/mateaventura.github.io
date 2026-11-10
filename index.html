@@ -490,7 +490,7 @@ function vWelcome(){$('#app').innerHTML=`<div class="card center" style="margin-
  <p class="mut" style="font-weight:700">Vas a viajar por 8 mundos resolviendo problemas. Cada acierto te da monedas ⭐ y logros 🏆.</p>
  <p style="font-weight:800;margin:16px 0 0">Elige tu compañero de aventura</p>
  <div class="pick">${FREE_AV.map(e=>`<button class="${e===wAv?'on':''}" onclick="wAv='${e}';vWelcomeKeep()">${e}</button>`).join('')}</div>
- <button class="btn" style="width:100%" onclick="startGame()">¡Empezar! 🚀</button></div><p class="firma">Hecho con ❤️ por papá</p>`}
+ <button class="btn" style="width:100%" onclick="startGame()">¡Empezar! 🚀</button></div><p class="firma">Hecho con ❤️ por papá y mamá</p>`}
 function vWelcomeKeep(){vWelcome();sfx('tap')}
 function startGame(){ST.started=1;ST.avatar=wAv;save();SCREEN='map';render();confetti(80);sfx('win')}
 
@@ -510,7 +510,7 @@ function vMap(){const [cw,cl]=curLevel();const retoHecho=ST.reto===today();
   for(let l=1;l<=5;l++){const o=isOpen(w,l),s=ST.stars[lvKey(w,l)]||0,cur=w===cw&&l===cl;
    h+=`<button class="node ${l===5?'boss':''} ${o?'':'lock'} ${cur?'cur':''}" ${o?`onclick="nodeTap(${w},${l})"`:''} title="${W.lv[l-1]}">${o?(l===5?'👑':l):'🔒'}${o?`<span class="st">${'⭐'.repeat(s)}${'<span style="opacity:.35">☆</span>'.repeat(3-s)}</span>`:''}</button>`}
   h+=`</div></div>`});
- h+=`<p class="firma">Hecho con ❤️ por papá</p>`;
+ h+=`<p class="firma">Hecho con ❤️ por papá y mamá</p>`;
  $('#app').innerHTML=h;if(nueva)setTimeout(showFrase,450);
  const el=$('#w'+cw);if(el&&cw>1)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150)}
 
